@@ -10,39 +10,39 @@ module Juno.Spec.Simple
   , CommandStatus
   ) where
 
-import Juno.Consensus.Server
+import           Juno.Consensus.Client
+import           Juno.Consensus.Server
+import           Juno.Messaging.Types
+import           Juno.Messaging.ZMQ
+import           Juno.Monitoring.Server (startMonitoring)
+import           Juno.Runtime.Api.ApiServer
 import qualified Juno.Runtime.MessageReceiver as RENV
-import Juno.Consensus.Client
-import Juno.Messaging.Types
-import Juno.Types
-import Juno.Messaging.ZMQ
-import Juno.Monitoring.Server (startMonitoring)
-import Juno.Runtime.Api.ApiServer
+import           Juno.Types
 
-import System.IO (BufferMode(..),stdout,stderr,hSetBuffering)
-import Control.Lens
-import Control.Monad
-import Control.Concurrent (modifyMVar_, yield, threadDelay, takeMVar, putMVar, newMVar, MVar)
+import           System.IO (BufferMode(..),stdout,stderr,hSetBuffering)
+import           Control.Lens
+import           Control.Monad
+import           Control.Concurrent (modifyMVar_, yield, threadDelay, takeMVar, putMVar, newMVar, MVar)
 import qualified Control.Concurrent.Lifted as CL
-import Control.Concurrent.Chan.Unagi
+import           Control.Concurrent.Chan.Unagi
 import qualified Control.Concurrent.Chan.Unagi.NoBlocking as NoBlock
 import qualified Control.Concurrent.Chan.Unagi.Bounded as Bounded
 
-import Data.ByteString (ByteString)
+import           Data.ByteString (ByteString)
 import qualified Data.Map as Map
-import Data.Thyme.Calendar (showGregorian)
-import Data.Thyme.Clock (getCurrentTime)
-import Data.Thyme.LocalTime
+import           Data.Thyme.Calendar (showGregorian)
+import           Data.Thyme.Clock (getCurrentTime)
+import           Data.Thyme.LocalTime
 
-import System.Console.GetOpt
-import System.Environment
-import System.Exit
+import           System.Console.GetOpt
+import           System.Environment
+import           System.Exit
 
-import Control.Monad.IO.Class
+import           Control.Monad.IO.Class
 
 import qualified Data.Yaml as Y
 
-import System.Random
+import           System.Random
 
 data Options = Options
   {  optConfigFile :: FilePath

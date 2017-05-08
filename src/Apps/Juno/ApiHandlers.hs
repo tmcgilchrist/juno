@@ -10,33 +10,33 @@ module Apps.Juno.ApiHandlers
   , ApiEnv(..)
   ) where
 
-import Control.Concurrent.Chan.Unagi
-import Control.Concurrent.MVar (readMVar)
-import Control.Concurrent.Lifted (threadDelay)
-import Control.Lens hiding ((.=))
-import Control.Monad.Reader
-import qualified Data.ByteString.Lazy.Char8 as BLC
-import qualified Data.ByteString.Char8 as BSC
-import qualified Data.Text as T
-import Data.List (intercalate)
-import Data.Maybe (catMaybes)
-import qualified Data.Map as Map
-import Data.Map (Map)
-import Data.Monoid ((<>))
-import Data.Text.Encoding (decodeUtf8)
-import Data.Ratio
-import Data.Aeson (encode, object, (.=))
+import           Control.Concurrent.Chan.Unagi
+import           Control.Concurrent.Lifted (threadDelay)
+import           Control.Concurrent.MVar (readMVar)
+import           Control.Lens hiding ((.=))
+import           Control.Monad.Reader
+import           Data.Aeson (encode, object, (.=))
 import qualified Data.Aeson as JSON
-import Snap.Core
-import System.Posix.Files
+import qualified Data.ByteString.Char8 as BSC
+import qualified Data.ByteString.Lazy.Char8 as BLC
+import           Data.List (intercalate)
+import           Data.Map (Map)
+import qualified Data.Map as Map
+import           Data.Maybe (catMaybes)
+import           Data.Monoid ((<>))
+import           Data.Ratio
+import qualified Data.Text as T
+import           Data.Text.Encoding (decodeUtf8)
+import           Snap.Core
+import           System.Posix.Files
 
-import Apps.Juno.JsonTypes
-import Apps.Juno.Ledger
-import Apps.Juno.Parser
-import Juno.Types hiding (CommandBatch)
-import Schwifty.Swift.M105.Types
-import Schwifty.Swift.M105.Parser
-import Apps.Juno.ApiDemoHandler (transferDemoReqHandler)
+import           Apps.Juno.JsonTypes
+import           Apps.Juno.Ledger
+import           Apps.Juno.Parser
+import           Juno.Types hiding (CommandBatch)
+import           Schwifty.Swift.M105.Types
+import           Schwifty.Swift.M105.Parser
+import           Apps.Juno.ApiDemoHandler (transferDemoReqHandler)
 
 data ApiEnv = ApiEnv {
       _aiToCommands :: InChan (RequestId, [CommandEntry]),

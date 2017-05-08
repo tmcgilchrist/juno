@@ -15,25 +15,25 @@ module Juno.Types.Base
   , Role(..)
   ) where
 
-import Control.Monad (mzero)
-import Crypto.Ed25519.Pure ( PublicKey, PrivateKey, Signature(..), sign, valid
+import           Control.Monad (mzero)
+import           Crypto.Ed25519.Pure ( PublicKey, PrivateKey, Signature(..), sign, valid
                            , importPublic, importPrivate, exportPublic, exportPrivate)
-import Data.Map (Map)
-import qualified Data.Map as Map
+import           Data.Aeson (genericParseJSON,genericToJSON,parseJSON,toJSON,ToJSON,FromJSON,Value(..))
+import           Data.Aeson.Types (defaultOptions,Options(..))
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Base16 as B16
-import Data.Serialize (Serialize)
+import           Data.Map (Map)
+import qualified Data.Map as Map
+import           Data.Serialize (Serialize)
 import qualified Data.Serialize as S
-import Data.Word (Word64)
-import Data.Text.Encoding (decodeUtf8, encodeUtf8)
-import Data.Thyme.Clock
-import Data.Thyme.Time.Core ()
-import Data.Thyme.Internal.Micro (Micro)
-import Data.Aeson (genericParseJSON,genericToJSON,parseJSON,toJSON,ToJSON,FromJSON,Value(..))
-import Data.Aeson.Types (defaultOptions,Options(..))
+import           Data.Text.Encoding (decodeUtf8, encodeUtf8)
+import           Data.Thyme.Clock
+import           Data.Thyme.Internal.Micro (Micro)
+import           Data.Thyme.Time.Core ()
+import           Data.Word (Word64)
 
-import GHC.Int (Int64)
-import GHC.Generics hiding (from)
+import           GHC.Int (Int64)
+import           GHC.Generics hiding (from)
 
 data NodeID = NodeID { _host :: !String, _port :: !Word64, _fullAddr :: !String }
   deriving (Eq,Ord,Read,Show,Generic)

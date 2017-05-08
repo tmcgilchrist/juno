@@ -4,12 +4,11 @@
 
 module Schwifty.Swift.M105.Types where
 
-import Data.Text (Text)
-
-
 import Control.Applicative
-import Data.Ratio
 import Control.Lens
+
+import Data.Ratio
+import Data.Text (Text)
 
 newtype Code = Code {_unCode :: Text} deriving (Eq, Show, Ord)
 $(makeLenses ''Code)

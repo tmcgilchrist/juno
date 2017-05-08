@@ -4,20 +4,20 @@
 {-# LANGUAGE RankNTypes        #-}
 
 module Juno.Messaging.Types (
-  Spec(..)
-  ,Addr(..)
-  ,OutBoundMsg(..)
-  ,Recipients(..)
-  ,ListenOn(..)
-  ,Rolodex(..)
+    Spec(..)
+  , Addr(..)
+  , OutBoundMsg(..)
+  , Recipients(..)
+  , ListenOn(..)
+  , Rolodex(..)
   ) where
 
-import Control.Concurrent.Chan.Unagi
+import           Control.Concurrent.Chan.Unagi
 import qualified Data.Map.Strict as Map
+import           Data.Serialize
 import qualified Data.Set as Set
-import Data.Serialize
-import GHC.Generics (Generic)
-import Juno.Types (ReceivedAt)
+import           GHC.Generics (Generic)
+import           Juno.Types (ReceivedAt)
 
 data Spec addr msg sock = Spec {
   -- | Messages for you

@@ -21,25 +21,25 @@ module Juno.Types.Spec
   , Event(..)
   ) where
 
-import Control.Concurrent (MVar, ThreadId)
-import Control.Lens hiding (Index, (|>))
-import Control.Monad.RWS.Strict (RWST)
-import Data.Map (Map)
+import           Control.Concurrent (MVar, ThreadId)
+import           Control.Lens hiding (Index, (|>))
+import           Control.Monad.RWS.Strict (RWST)
+import           Data.ByteString (ByteString)
+import           Data.Map (Map)
 import qualified Data.Map as Map
-import Data.Set (Set)
+import           Data.Set (Set)
 import qualified Data.Set as Set
-import Data.ByteString (ByteString)
-import Data.Thyme.Clock
-import Data.Thyme.Time.Core ()
-import System.Random (Random)
+import           Data.Thyme.Clock
+import           Data.Thyme.Time.Core ()
+import           System.Random (Random)
 
-import Juno.Types.Base
-import Juno.Types.Command
-import Juno.Types.Config
-import Juno.Types.Event
-import Juno.Types.Log
-import Juno.Types.Message
-import Juno.Types.Metric
+import           Juno.Types.Base
+import           Juno.Types.Command
+import           Juno.Types.Config
+import           Juno.Types.Event
+import           Juno.Types.Log
+import           Juno.Types.Message
+import           Juno.Types.Metric
 
 -- | A structure containing all the implementation details for running
 -- the raft protocol.
@@ -66,7 +66,7 @@ data RaftSpec m = RaftSpec
   , _readVotedFor     :: m (Maybe NodeID)
 
     -- ^ Function to write the node voted for to persistent storage.
-  , _writeVotedFor    :: Maybe NodeID -> m ()
+  , _writeVotedFor    :: Maybe NodeID -> m () -- This is a smell, why should it ever be Nothing
 
     -- ^ Function to apply a log entry to the state machine.
   , _applyLogEntry    :: Command -> m CommandResult
@@ -122,7 +122,7 @@ data RaftSpec m = RaftSpec
 makeLenses (''RaftSpec)
 
 data RaftState = RaftState
-  { _nodeRole             :: Role
+  { _nodeRole         :: Role
   , _term             :: Term
   , _votedFor         :: Maybe NodeID
   , _lazyVote         :: Maybe (Term, NodeID, LogIndex)

@@ -8,17 +8,17 @@ module Juno.Types.Command
   , CommandMap(..), CommandMVarMap, initCommandMap, setNextCmdRequestId
   ) where
 
-import Control.Concurrent (MVar, newMVar, takeMVar, putMVar)
-import Data.Map (Map)
+import           Control.Concurrent (MVar, newMVar, takeMVar, putMVar)
+import           Data.ByteString (ByteString)
+import           Data.Map (Map)
 import qualified Data.Map as Map
-import Data.ByteString (ByteString)
-import Data.Serialize (Serialize)
-import Data.Thyme.Clock
-import Data.Thyme.Time.Core (unUTCTime, toMicroseconds)
-import GHC.Generics hiding (from)
-import GHC.Int (Int64)
+import           Data.Serialize (Serialize)
+import           Data.Thyme.Clock
+import           Data.Thyme.Time.Core (unUTCTime, toMicroseconds)
+import           GHC.Generics hiding (from)
+import           GHC.Int (Int64)
 
-import Juno.Types.Base
+import           Juno.Types.Base
 
 -- Shared between API and Juno protocol
 -- holds the command result when the status is CmdApplied
