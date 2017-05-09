@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/buckie/juno.svg?branch=develop)](https://travis-ci.org/buckie/juno)
+[![Build Status](https://travis-ci.org/tmcgilchrist/juno.svg?branch=develop)](https://travis-ci.org/tmcgilchrist/juno)
 
 
 <h1 align="center">Juno</h1>
