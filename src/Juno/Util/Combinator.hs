@@ -8,8 +8,7 @@ module Juno.Util.Combinator
   ) where
 
 import System.IO (hFlush, stderr, stdout)
-import Control.Concurrent (threadDelay, forkFinally, MVar(..), putMVar, takeMVar, newEmptyMVar, forkIO)
-import Control.Concurrent.Async
+import Control.Concurrent (forkFinally, putMVar, takeMVar, newEmptyMVar, forkIO)
 import Control.Lens
 import Control.Monad.RWS.Strict
 import Data.Thyme.Calendar (showGregorian)

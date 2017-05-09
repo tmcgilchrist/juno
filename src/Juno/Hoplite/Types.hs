@@ -2,7 +2,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE DeriveFunctor, DeriveFoldable, DeriveTraversable,DeriveAnyClass #-}
+{-# LANGUAGE DeriveFunctor#-}
+{-# LANGUAGE DeriveTraversable#-}
+{-# LANGUAGE DeriveFoldable #-}
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE KindSignatures #-}
@@ -20,7 +23,6 @@ import qualified Data.Map as Map
 import qualified Data.Set as Set
 import           Data.Text (Text)
 import           Data.Traversable
-import           Data.Typeable
 import qualified Data.Vector as V
 import           Data.Word
 import           GHC.Generics (Generic)
