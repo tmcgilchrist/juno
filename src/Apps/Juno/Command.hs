@@ -4,30 +4,30 @@
 
 module Apps.Juno.Command where
 
-import Data.Either ()
+import qualified Control.Concurrent.MVar as MV
+import           Control.Exception (SomeException, handle)
+import           Control.Lens hiding ((.=))
 import qualified Data.Attoparsec.ByteString.Char8 as Atto
-import qualified Data.Map.Strict as Map
-import Data.Text (Text)
-import qualified Data.Text as T
 import qualified Data.ByteString.Char8 as BSC
 import qualified Data.ByteString.Lazy.Char8 as BLC
-import qualified Juno.Hoplite.Term as DTerm
+import           Data.Either ()
+import qualified Data.Map.Strict as Map
+import           Data.Ratio
+import           Data.Text (Text)
+import qualified Data.Text as T
 import qualified Juno.Hoplite.Eval as DEval
-import qualified Control.Concurrent.MVar as MV
-import Control.Exception (SomeException, handle)
-import Control.Lens hiding ((.=))
-import Data.Ratio
+import qualified Juno.Hoplite.Term as DTerm
 
-import Data.Aeson (encode, object, (.=))
-import Data.Aeson.Encode.Pretty (encodePretty)
+import           Data.Aeson (encode, object, (.=))
+import           Data.Aeson.Encode.Pretty (encodePretty)
 
-import Juno.Types (CommandEntry(..), CommandResult(..))
-import Juno.Types.Base (RequestId)
-import Juno.Types.Message.CMD
-import Schwifty.Swift.M105.Types (SWIFT)
+import           Juno.Types (CommandEntry(..), CommandResult(..))
+import           Juno.Types.Base (RequestId)
+import           Juno.Types.Message.CMD
+import           Schwifty.Swift.M105.Types (SWIFT)
 
-import Apps.Juno.Parser
-import Apps.Juno.Ledger (runQuery, convertQuery)
+import           Apps.Juno.Parser
+import           Apps.Juno.Ledger (runQuery, convertQuery)
 
 -- state of hopper
 newtype JunoEnv = JunoEnv {getStateMVar :: MV.MVar (DEval.PersistentState

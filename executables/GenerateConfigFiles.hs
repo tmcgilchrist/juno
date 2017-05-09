@@ -1,20 +1,22 @@
 module Main (main) where
 
-import Control.Arrow
-import Crypto.Random
-import Data.Ratio
-import Crypto.Ed25519.Pure
-import Text.Read
-import Data.Thyme.Clock
-import System.IO
-import System.FilePath
+import           Control.Arrow
+import           Crypto.Ed25519.Pure
+import           Crypto.Random
+
+import           Data.Map.Strict (Map)
+import qualified Data.Map.Strict as Map
+import           Data.Ratio
+import qualified Data.Set as Set
+import           Data.Thyme.Clock
 import qualified Data.Yaml as Y
 
-import qualified Data.Set as Set
-import Data.Map.Strict (Map)
-import qualified Data.Map.Strict as Map
+import           Juno.Types
 
-import Juno.Types
+import           System.FilePath
+import           System.IO
+
+import           Text.Read
 
 nodes :: [NodeID]
 nodes = iterate (\n@(NodeID h p _) -> n {_port = p + 1, _fullAddr = "tcp://" ++ h ++ ":" ++ show (p+1)}) (NodeID "127.0.0.1" 10000 "tcp://127.0.0.1:10000")

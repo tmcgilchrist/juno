@@ -5,19 +5,19 @@ module Juno.Consensus.Api
   ( apiReceiver
   ) where
 
-import Control.Lens
-import qualified Data.Set as Set
-import Control.Monad
-import qualified Data.Map as Map
+import           Control.Concurrent (takeMVar, putMVar, modifyMVar_)
+import           Control.Lens
+import           Control.Monad
+import           Control.Monad.RWS
 import qualified Data.ByteString.Char8 as SB8
-import Control.Monad.RWS
-import Text.Read (readMaybe)
-import Control.Concurrent (takeMVar, putMVar, modifyMVar_)
+import qualified Data.Map as Map
+import qualified Data.Set as Set
+import           Text.Read (readMaybe)
 
-import Juno.Types
-import Juno.Util.Util
-import Juno.Runtime.Timer
-import Juno.Runtime.Sender (sendRPC)
+import           Juno.Types
+import           Juno.Util.Util
+import           Juno.Runtime.Timer
+import           Juno.Runtime.Sender (sendRPC)
 
 
 -- TODO do we need all this? can we just enqueueEvent directly?

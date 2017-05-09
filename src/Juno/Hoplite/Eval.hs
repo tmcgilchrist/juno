@@ -14,20 +14,19 @@
 module Juno.Hoplite.Eval where
 
 
-import Juno.Hoplite.Heap
-import Control.Monad.RWS.Class
-import Control.Monad.RWS.Strict
-
-import Data.Typeable
-import Data.Data
-import GHC.Generics
+import           Bound
+import           Control.Lens (view,_1,makeLenses)
+import           Control.Monad.RWS.Class
+import           Control.Monad.RWS.Strict
+import           Data.Data
 import qualified Data.Map.Strict as Map
-import Numeric.Natural
-import Data.Text (Text,pack)
-import Bound
-import Juno.Hoplite.Types
-import Control.Lens (view,_1,makeLenses)
-import Juno.Hoplite.STExcept
+import           Data.Text (Text,pack)
+import           Data.Typeable
+import           GHC.Generics
+import           Juno.Hoplite.Heap
+import           Juno.Hoplite.STExcept
+import           Juno.Hoplite.Types
+import           Numeric.Natural
 
 
 data Cmd = Cmd {

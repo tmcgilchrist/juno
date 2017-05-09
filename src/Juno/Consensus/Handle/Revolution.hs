@@ -2,19 +2,19 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Juno.Consensus.Handle.Revolution
-    (handle)
-where
+module Juno.Consensus.Handle.Revolution (
+    handle
+  ) where
 
-import Control.Lens
-import Control.Monad.Reader
-import Control.Monad.State
-import Control.Monad.Writer
+import           Control.Lens
+import           Control.Monad.Reader
+import           Control.Monad.State
+import           Control.Monad.Writer
 
-import Data.Map (Map)
+import           Data.Map (Map)
 import qualified Data.Map as Map
-import Juno.Consensus.Handle.Types
-import Juno.Util.Util (debug, getRevSigOrInvariantError)
+import           Juno.Consensus.Handle.Types
+import           Juno.Util.Util (debug, getRevSigOrInvariantError)
 
 import qualified Juno.Types as JT
 

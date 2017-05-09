@@ -10,19 +10,19 @@ module Juno.Types.Message.AER
   , AlotOfAERs(..), unAlot
   ) where
 
-import Control.Lens
-import Data.Map (Map)
+import           Control.Lens
+import           Data.ByteString (ByteString)
+import           Data.Map (Map)
 import qualified Data.Map as Map
-import Data.Set (Set)
-import qualified Data.Set as Set
-import Data.ByteString (ByteString)
-import Data.Serialize (Serialize)
+import           Data.Serialize (Serialize)
 import qualified Data.Serialize as S
-import Data.Thyme.Time.Core ()
-import GHC.Generics
+import           Data.Set (Set)
+import qualified Data.Set as Set
+import           Data.Thyme.Time.Core ()
+import           GHC.Generics
 
-import Juno.Types.Base
-import Juno.Types.Message.Signed
+import           Juno.Types.Base
+import           Juno.Types.Message.Signed
 
 data AppendEntriesResponse = AppendEntriesResponse
   { _aerTerm       :: !Term

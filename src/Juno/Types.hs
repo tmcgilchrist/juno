@@ -1,5 +1,5 @@
-module Juno.Types
-  ( module X
+module Juno.Types (
+    module X
   ) where
 
 import Juno.Types.Base as X

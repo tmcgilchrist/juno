@@ -21,15 +21,14 @@ module Juno.Util.Util
   , getRevSigOrInvariantError
   ) where
 
-import Juno.Types
-import Juno.Util.Combinator
-
-import Control.Lens
-import Data.Sequence (Seq)
-import Control.Monad.RWS.Strict
 import qualified Control.Concurrent.Lifted as CL
-import qualified Data.Sequence as Seq
+import           Control.Lens
+import           Control.Monad.RWS.Strict
 import qualified Data.Map.Strict as Map
+import           Data.Sequence (Seq)
+import qualified Data.Sequence as Seq
+import           Juno.Types
+import           Juno.Util.Combinator
 import qualified System.Random as R
 
 seqIndex :: Seq a -> Int -> Maybe a

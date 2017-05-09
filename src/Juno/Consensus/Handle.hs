@@ -1,17 +1,16 @@
-
 module Juno.Consensus.Handle
   ( handleEvents )
 where
 
-import Control.Lens hiding ((:>))
-import Data.AffineSpace
-import Control.Monad
-import Data.Maybe
+import           Control.Lens hiding ((:>))
+import           Control.Monad
+import           Data.AffineSpace
+import           Data.Maybe
 
-import Juno.Types
-import Juno.Consensus.Commit (doCommit)
-import Juno.Runtime.Sender (sendAllAppendEntries,sendAllAppendEntriesResponse)
-import Juno.Util.Util (debug, dequeueEvent)
+import           Juno.Types
+import           Juno.Consensus.Commit (doCommit)
+import           Juno.Runtime.Sender (sendAllAppendEntries,sendAllAppendEntriesResponse)
+import           Juno.Util.Util (debug, dequeueEvent)
 
 import qualified Juno.Consensus.Handle.AppendEntries as PureAppendEntries
 import qualified Juno.Consensus.Handle.AppendEntriesResponse as PureAppendEntriesResponse

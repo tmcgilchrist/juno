@@ -9,19 +9,19 @@ module Juno.Types.Config
   , KeySet(..), ksClient, ksCluster
   ) where
 
-import Control.Monad (mzero)
-import Control.Lens hiding (Index, (|>))
-import Data.Map (Map)
-import Data.Set (Set)
-import Text.Read (readMaybe)
+import           Control.Lens hiding (Index, (|>))
+import           Control.Monad (mzero)
+import           Data.Aeson (genericParseJSON, genericToJSON, parseJSON, toJSON, ToJSON, FromJSON, Value(..))
+import           Data.Aeson.Types (defaultOptions,Options(..))
+import           Data.Map (Map)
+import           Data.Set (Set)
 import qualified Data.Text as Text
-import Data.Thyme.Clock
-import Data.Thyme.Time.Core ()
-import Data.Aeson (genericParseJSON,genericToJSON,parseJSON,toJSON,ToJSON,FromJSON,Value(..))
-import Data.Aeson.Types (defaultOptions,Options(..))
-import GHC.Generics hiding (from)
+import           Data.Thyme.Clock
+import           Data.Thyme.Time.Core ()
+import           GHC.Generics hiding (from)
+import           Text.Read (readMaybe)
 
-import Juno.Types.Base
+import           Juno.Types.Base
 
 data Config = Config
   { _otherNodes           :: !(Set NodeID)

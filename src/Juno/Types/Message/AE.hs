@@ -7,21 +7,21 @@ module Juno.Types.Message.AE
   ( AppendEntries(..), aeTerm, leaderId, prevLogIndex, prevLogTerm, aeEntries, aeQuorumVotes, aeProvenance
   ) where
 
-import Codec.Compression.LZ4
-import Control.Parallel.Strategies
-import Control.Lens
-import Data.Sequence (Seq)
-import Data.Set (Set)
-import Data.Serialize (Serialize)
+import           Codec.Compression.LZ4
+import           Control.Lens
+import           Control.Parallel.Strategies
+import           Data.Foldable
+import           Data.Sequence (Seq)
+import           Data.Serialize (Serialize)
 import qualified Data.Serialize as S
-import Data.Foldable
-import Data.Thyme.Time.Core ()
-import GHC.Generics
+import           Data.Set (Set)
+import           Data.Thyme.Time.Core ()
+import           GHC.Generics
 
-import Juno.Types.Base
-import Juno.Types.Message.Signed
-import Juno.Types.Message.RVR
-import Juno.Types.Log
+import           Juno.Types.Base
+import           Juno.Types.Message.Signed
+import           Juno.Types.Message.RVR
+import           Juno.Types.Log
 
 data AppendEntries = AppendEntries
   { _aeTerm        :: !Term

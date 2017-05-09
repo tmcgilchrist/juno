@@ -2,30 +2,32 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE DeriveFunctor, DeriveFoldable, DeriveTraversable,DeriveAnyClass #-}
+{-# LANGUAGE DeriveFunctor#-}
+{-# LANGUAGE DeriveTraversable#-}
+{-# LANGUAGE DeriveFoldable #-}
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE TypeOperators#-}
+{-# LANGUAGE TypeOperators #-}
 
 module Juno.Hoplite.Types where
 
-import Numeric.Natural
-import Data.Typeable
-import Data.Data
-import Data.Text (Text)
+import           Bound
+import           Control.Monad
+import           Data.Data
+import           Data.Foldable
 import qualified Data.Map as Map
 import qualified Data.Set as Set
-import Data.Foldable
-import Prelude.Extras
-import GHC.Generics (Generic)
-import Data.Word
+import           Data.Text (Text)
+import           Data.Traversable
 import qualified Data.Vector as V
-import Bound
-import Control.Monad
-import Data.Traversable
+import           Data.Word
+import           GHC.Generics (Generic)
+import           Numeric.Natural
+import           Prelude.Extras
 
 data Literal = LInteger !Integer
              | LRational !Rational
@@ -50,9 +52,9 @@ data TCon {-a -}=  TInteger | TNatural | TRational  | TUnit | TArrow RigModel
                 | PubKey String {- this is not how it'll work :) -}
                 -- | Linear
     deriving (Eq,Ord,Read,Show ,Data,Typeable,Generic)
+
 data Type ty  {-a -}=  Tapp (Type ty) (Type ty) | TLit (TCon) | TVar ty
    deriving (Eq1,Ord1,Show1,Read1,Eq,Ord,Read,Show,Data,Typeable,Functor,Foldable,Traversable,Generic)
-
 
 -- | current theres no pointer tagging in 'Ref' but eventually that will
 -- probably change

@@ -4,16 +4,18 @@ module Schwifty.Swift.M105.Parser (
   parseSwift
   ) where
 
-import Data.Text (Text)
-import Data.Ratio
-import Data.Maybe (fromJust)
-import qualified Data.Text as T
-import Text.Megaparsec
-import Text.Megaparsec.Text
-import Control.Monad
-import Control.Lens
+import           Control.Lens
+import           Control.Monad
 
-import Schwifty.Swift.M105.Types
+import           Data.Maybe (fromJust)
+import           Data.Ratio
+import           Data.Text (Text)
+import qualified Data.Text as T
+
+import           Schwifty.Swift.M105.Types
+
+import           Text.Megaparsec
+import           Text.Megaparsec.Text
 
 
 -- Field Parsers

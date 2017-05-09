@@ -2,18 +2,18 @@ module Juno.Consensus.Server
   ( runRaftServer
   ) where
 
-import Control.Lens
+import           Control.Lens
 import qualified Data.Set as Set
 
-import Juno.Consensus.Handle
-import Juno.Consensus.Api (apiReceiver)
-import Juno.Types
-import Juno.Util.Util
-import Juno.Runtime.Timer
-import Juno.Runtime.MessageReceiver
+import           Juno.Consensus.Handle
+import           Juno.Consensus.Api (apiReceiver)
+import           Juno.Types
+import           Juno.Util.Util
+import           Juno.Runtime.Timer
+import           Juno.Runtime.MessageReceiver
 
 import qualified Control.Concurrent.Lifted as CL
-import Control.Monad
+import           Control.Monad
 
 runRaftServer :: ReceiverEnv -> Config -> RaftSpec (Raft IO) -> IO ()
 runRaftServer renv rconf spec = do
