@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
 
-module Apps.Juno.Command where
+module Hop.Apps.Juno.Command where
 
 import Data.Either ()
 import qualified Data.Attoparsec.ByteString.Char8 as Atto
@@ -11,8 +11,8 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.ByteString.Char8 as BSC
 import qualified Data.ByteString.Lazy.Char8 as BLC
-import qualified Juno.Hoplite.Term as DTerm
-import qualified Juno.Hoplite.Eval as DEval
+import qualified Hop.Hoplite.Term as DTerm
+import qualified Hop.Hoplite.Eval as DEval
 import qualified Control.Concurrent.MVar as MV
 import Control.Exception (SomeException, handle)
 import Control.Lens hiding ((.=))
@@ -24,10 +24,10 @@ import Data.Aeson.Encode.Pretty (encodePretty)
 import Juno.Types (CommandEntry(..), CommandResult(..))
 import Juno.Types.Base (RequestId)
 import Juno.Types.Message.CMD
-import Schwifty.Swift.M105.Types (SWIFT)
+import Hop.Schwifty.Swift.M105.Types (SWIFT)
 
-import Apps.Juno.Parser
-import Apps.Juno.Ledger (runQuery, convertQuery)
+import Hop.Apps.Juno.Parser
+import Hop.Apps.Juno.Ledger (runQuery, convertQuery)
 
 -- state of hopper
 newtype JunoEnv = JunoEnv {getStateMVar :: MV.MVar (DEval.PersistentState

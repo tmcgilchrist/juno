@@ -20,7 +20,7 @@ import           Snap.Core
 import           Snap.CORS
 import           Snap.Http.Server
 
-import           Apps.Juno.ApiHandlers
+import           Hop.Apps.Juno.ApiHandlers
 import           Juno.Types                    hiding (Config)
 
 -- |
@@ -42,7 +42,7 @@ snapApiServer :: InChan (RequestId, [CommandEntry]) -> CommandMVarMap -> Int -> 
 snapApiServer toCommands' cmdStatusMap' port = httpServe (serverConf port) $
     applyCORS defaultOptions $ methods [GET, POST]
     (ifTop (writeBS "use /hopper for commands") <|>
-     route [ ("/", runReaderT apiRoutes (ApiEnv toCommands' cmdStatusMap'))] -- api/juno/v1
+     route [ ("/", runReaderT undefined apiRoutes (ApiEnv toCommands' cmdStatusMap'))] -- api/juno/v1
     )
 
 serverConf :: MonadSnap m => Int -> Config m a

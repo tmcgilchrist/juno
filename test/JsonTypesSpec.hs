@@ -9,7 +9,7 @@ import           Data.Aeson (encode
 import qualified Data.ByteString.Lazy.Char8 as BL
 import           Data.Ratio
 import qualified Data.Text as T
-import           Apps.Juno.JsonTypes
+import           Hop.Apps.Juno.JsonTypes
 
 spec :: Spec
 spec = do

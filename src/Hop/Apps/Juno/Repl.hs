@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-module Apps.Juno.Repl
+module Hop.Apps.Juno.Repl
  ( main
  ) where
 
@@ -14,8 +14,8 @@ import qualified Data.Text as T
 import qualified Network.Wreq as W
 import System.IO
 
-import Apps.Juno.Parser
-import qualified Apps.Juno.JsonTypes as JsonT
+import Hop.Apps.Juno.Parser
+import qualified Hop.Apps.Juno.JsonTypes as JsonT
 
 prompt :: String
 prompt = "\ESC[0;31mhopper>> \ESC[0m"

@@ -1,8 +1,8 @@
 {-# LANGUAGE RankNTypes , ScopedTypeVariables #-}
 
-module Juno.Hoplite.Term where
+module Hop.Hoplite.Term where
 
-import qualified Juno.Hoplite.Types as T
+import qualified Hop.Hoplite.Types as T
 import Data.Text (Text)
 -- import qualified
 import   Bound as Bd

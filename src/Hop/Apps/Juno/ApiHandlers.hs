@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Apps.Juno.ApiHandlers
+module Hop.Apps.Juno.ApiHandlers
   ( createAccount
   , adjustAccount
   , transactAPI
@@ -30,13 +30,13 @@ import qualified Data.Aeson as JSON
 import Snap.Core
 import System.Posix.Files
 
-import Apps.Juno.JsonTypes
-import Apps.Juno.Ledger
-import Apps.Juno.Parser
+import Hop.Apps.Juno.JsonTypes
+import Hop.Apps.Juno.Ledger
+import Hop.Apps.Juno.Parser
 import Juno.Types hiding (CommandBatch)
-import Schwifty.Swift.M105.Types
-import Schwifty.Swift.M105.Parser
-import Apps.Juno.ApiDemoHandler (transferDemoReqHandler)
+import Hop.Schwifty.Swift.M105.Types
+import Hop.Schwifty.Swift.M105.Parser
+import Hop.Apps.Juno.ApiDemoHandler (transferDemoReqHandler)
 
 data ApiEnv = ApiEnv {
       _aiToCommands :: InChan (RequestId, [CommandEntry]),

@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric, DeriveAnyClass #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Apps.Juno.Ledger (
+module Hop.Apps.Juno.Ledger (
   dirtyPickOutAccount50a
   ,runQuery
   ,convertQuery
@@ -27,8 +27,8 @@ import Data.Map.Strict (Map)
 import Data.Ratio
 import qualified Data.Map.Strict as Map
 
-import Juno.Hoplite.Eval (TransactionId(..), OpId(..), OrderedOp, Cmd(..))
-import Schwifty.Swift.M105.Types
+import Hop.Hoplite.Eval (TransactionId(..), OpId(..), OrderedOp, Cmd(..))
+import Hop.Schwifty.Swift.M105.Types
 
 data Transaction = Transaction {
    transId :: Int

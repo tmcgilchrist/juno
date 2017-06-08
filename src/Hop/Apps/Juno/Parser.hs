@@ -2,7 +2,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module Apps.Juno.Parser (
+module Hop.Apps.Juno.Parser (
   HopperLiteAdminCommand (..)
   ,SwiftBlob(..)
   ,readHopper
@@ -23,13 +23,13 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Ratio
 
-import Schwifty.Swift.M105.Types
-import Schwifty.Swift.M105.Parser
-import Apps.Juno.Ledger
+import Hop.Schwifty.Swift.M105.Types
+import Hop.Schwifty.Swift.M105.Parser
+import Hop.Apps.Juno.Ledger
 
-import Juno.Hoplite.Term (HopliteTerm(..))
-import Juno.Hoplite.Types (Literal(..))
-import Juno.Hoplite.Transmatic
+import Hop.Hoplite.Term (HopliteTerm(..))
+import Hop.Hoplite.Types (Literal(..))
+import Hop.Hoplite.Transmatic
 
 import Juno.Types.Base (RequestId(..))
 

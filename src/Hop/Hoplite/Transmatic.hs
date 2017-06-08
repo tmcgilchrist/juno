@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Juno.Hoplite.Transmatic
+module Hop.Hoplite.Transmatic
     ( -- * Parse
       Txm (..)
     , tInteger, tString, tAtom, tList
@@ -14,9 +14,9 @@ module Juno.Hoplite.Transmatic
     ) where
 import Data.Ratio
 import Data.Maybe
-import Juno.Hoplite.Types hiding (Exp(..))
-import Juno.Hoplite.Term
-import Juno.Hoplite.Eval
+import Hop.Hoplite.Types hiding (Exp(..))
+import Hop.Hoplite.Term
+import Hop.Hoplite.Eval
 import qualified Data.Map as Map
 import qualified Text.Trifecta as TF
 import Text.Parser.Char

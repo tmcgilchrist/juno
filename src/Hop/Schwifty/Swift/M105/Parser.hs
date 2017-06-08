@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Schwifty.Swift.M105.Parser (
+module Hop.Schwifty.Swift.M105.Parser (
   parseSwift
   ) where
 
@@ -13,7 +13,7 @@ import Text.Megaparsec.Text
 import Control.Monad
 import Control.Lens
 
-import Schwifty.Swift.M105.Types
+import Hop.Schwifty.Swift.M105.Types
 
 
 -- Field Parsers

@@ -2,7 +2,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Schwifty.Swift.M105.Types where
+module Hop.Schwifty.Swift.M105.Types where
 
 import Data.Text (Text)
 

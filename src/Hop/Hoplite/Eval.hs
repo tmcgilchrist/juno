@@ -11,10 +11,10 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Juno.Hoplite.Eval where
+module Hop.Hoplite.Eval where
 
 
-import Juno.Hoplite.Heap
+import Hop.Hoplite.Heap
 import Control.Monad.RWS.Class
 import Control.Monad.RWS.Strict
 
@@ -25,9 +25,9 @@ import qualified Data.Map.Strict as Map
 import Numeric.Natural
 import Data.Text (Text,pack)
 import Bound
-import Juno.Hoplite.Types
+import Hop.Hoplite.Types
 import Control.Lens (view,_1,makeLenses)
-import Juno.Hoplite.STExcept
+import Hop.Hoplite.STExcept
 
 
 data Cmd = Cmd {

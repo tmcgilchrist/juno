@@ -9,11 +9,11 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE TypeFamilies, TypeOperators #-}
 
-module Juno.Hoplite.Heap
+module Hop.Hoplite.Heap
 
     where
 --import Language.Hopper.Internal.Core.ANF
-import Juno.Hoplite.Types
+import Hop.Hoplite.Types
 import qualified Data.Map as Map
 import GHC.Generics
 import Numeric.Natural
@@ -23,7 +23,7 @@ import Prelude.Extras
 import Control.Monad.Trans.Class as MT
 import Control.Monad.Primitive as  Prim
 import Control.Monad.IO.Class as MIO
-import Juno.Hoplite.STExcept
+import Hop.Hoplite.STExcept
 import Data.Data
 
 --import Bound

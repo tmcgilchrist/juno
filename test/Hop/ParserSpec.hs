@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
-module ParserSpec where
+module Hop.ParserSpec where
 
 import Test.Hspec
-import Apps.Juno.Parser
+import Hop.Apps.Juno.Parser
 import Data.Ratio
 import Data.Text as T
-import Juno.Hoplite.Term
-import Juno.Hoplite.Types (Literal(..))
+import Hop.Hoplite.Term
+import Hop.Hoplite.Types (Literal(..))
 
 spec :: Spec
 spec = do

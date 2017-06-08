@@ -1,5 +1,5 @@
 {-# LANGUAGE MagicHash, UnboxedTuples, RankNTypes, TypeFamilies, DeriveDataTypeable, GADTs,FlexibleContexts #-}
-module Juno.Hoplite.STExcept(
+module Hop.Hoplite.STExcept(
   STE
   ,runSTE
   ,throwSTE

@@ -1,6 +1,6 @@
 module Main where
 
-import qualified Apps.Juno.Client as App
+import qualified Hop.Apps.Juno.Server as App
 
 main :: IO ()
 main = App.main

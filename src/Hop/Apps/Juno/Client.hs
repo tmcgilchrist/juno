@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Apps.Juno.Client
+module Hop.Apps.Juno.Client
   ( main
   ) where
 
@@ -19,7 +19,7 @@ import GHC.Int (Int64)
 import Juno.Spec.Simple
 import Juno.Types
 
-import Apps.Juno.Parser
+import Hop.Apps.Juno.Parser
 
 prompt :: String
 prompt = "\ESC[0;31mhopper>> \ESC[0m"

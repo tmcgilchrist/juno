@@ -4,7 +4,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveAnyClass #-}
 
-module Apps.Juno.JsonTypes where
+module Hop.Apps.Juno.JsonTypes where
 
 import           Control.Applicative
 import           Control.Monad (mzero)

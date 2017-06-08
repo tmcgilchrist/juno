@@ -10,7 +10,7 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE TypeOperators#-}
 
-module Juno.Hoplite.Types where
+module Hop.Hoplite.Types where
 
 import Numeric.Natural
 import Data.Typeable

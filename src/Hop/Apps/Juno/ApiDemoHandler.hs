@@ -3,7 +3,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Apps.Juno.ApiDemoHandler (transferDemoReqHandler) where
+module Hop.Apps.Juno.ApiDemoHandler (transferDemoReqHandler) where
 
 import Control.Monad.Reader
 import Data.List (intercalate)
@@ -12,8 +12,8 @@ import qualified Data.ByteString.Char8 as BSC
 import qualified Data.Aeson as JSON
 import           GHC.Generics
 import           Data.Aeson as JSON
-import Apps.Juno.Parser (programCodeDelimiter)
-import Apps.Juno.JsonTypes
+import Hop.Apps.Juno.Parser (programCodeDelimiter)
+import Hop.Apps.Juno.JsonTypes
 import Juno.Types hiding (CommandBatch)
 
 

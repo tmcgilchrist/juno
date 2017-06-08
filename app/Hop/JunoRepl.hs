@@ -1,6 +1,6 @@
 module Main where
 
-import qualified Apps.Juno.Repl as App
+import qualified Hop.Apps.Juno.Repl as App
 
 -- stack exec -- junorepl
 main :: IO ()
