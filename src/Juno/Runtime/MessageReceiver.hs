@@ -8,7 +8,6 @@ module Juno.Runtime.MessageReceiver
   , ReceiverEnv(..)
   ) where
 
-import Control.Concurrent (forkIO)
 import Control.Lens
 import Control.Monad
 import Control.Monad.Reader
@@ -117,4 +116,4 @@ aerOnlyDecode ts s@SignedRPC{..}
   | _digType _sigDigest /= AER = error $ "Invariant Error: aerOnlyDecode called on " ++ show s
   | otherwise = case S.decode _sigBody of
       Left !err -> Left $! "Failure to decode AERWire: " ++ err
-      Right (AERWire !(t,nid,s',c,i,h)) -> Right $! AppendEntriesResponse t nid s' c i h False $ ReceivedMsg _sigDigest _sigBody $ Just ts
+      Right (AERWire (t,nid,s',c,i,h)) -> Right $! AppendEntriesResponse t nid s' c i h False $ ReceivedMsg _sigDigest _sigBody $ Just ts

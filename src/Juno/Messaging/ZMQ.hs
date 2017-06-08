@@ -8,7 +8,7 @@ module Juno.Messaging.ZMQ (
   runMsgServer
   ) where
 
-import Control.Concurrent (forkIO, threadDelay, yield, newMVar, takeMVar, putMVar, yield, newEmptyMVar)
+import Control.Concurrent (forkIO, threadDelay, yield, newMVar, takeMVar, putMVar, yield)
 import qualified Control.Concurrent.Async as Async
 import Control.Concurrent.Chan.Unagi
 import qualified Control.Concurrent.Chan.Unagi.NoBlocking as NoBlock
@@ -25,7 +25,6 @@ import System.IO (hFlush, stderr, stdout)
 
 import Juno.Messaging.Types
 import Juno.Types (ReceivedAt(..),Digest(..),MsgType(..),SignedRPC(..))
-import Juno.Util.Combinator (foreverRetry)
 
 sendProcess :: OutChan (OutBoundMsg String ByteString)
             -> Rolodex String (Socket z Push)
@@ -35,7 +34,7 @@ sendProcess outboxRead !r = do
   rMvar <- liftIO $ newMVar r
   forever $ do
     (OutBoundMsg !addrs !msg) <- liftIO $! readChan outboxRead
-    liftIO $ moreLogging $ "Sending message to " ++ (show addrs) ++ " ## MSG ## " ++ show msg
+    liftIO $ moreLogging $ "Sending message to " ++ show addrs ++ " ## MSG ## " ++ show msg
     r' <- liftIO $ takeMVar rMvar
     !newRol <- updateRolodex r' addrs
     !toPoll <- recipList newRol addrs

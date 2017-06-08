@@ -9,7 +9,7 @@ module Hop.Apps.Juno.JsonTypes where
 import           Control.Applicative
 import           Control.Monad (mzero)
 import           Data.Aeson as JSON
-import           Data.Aeson.Types (Options(..),defaultOptions,parseMaybe)
+import           Data.Aeson.Types (Options(..),parseMaybe)
 import           Data.Char (isSpace)
 import           Data.Ratio
 import qualified Data.Text as T
@@ -60,7 +60,7 @@ instance FromJSON Digest where
     parseJSON  = genericParseJSON $ defaultOptions { fieldLabelModifier = removeUnderscore }
 
 
-data AccountPayload = AccountPayload { _account :: Text } deriving (Eq, Generic, Show)
+newtype AccountPayload = AccountPayload { _account :: Text } deriving (Eq, Generic, Show)
 
 instance ToJSON AccountPayload where
     toJSON = genericToJSON $ defaultOptions { fieldLabelModifier = removeUnderscore }
@@ -125,7 +125,7 @@ instance FromJSON AccountAdjustRequest where
     parseJSON _ = mzero
 
 -- | Polling for commands
-data PollPayload = PollPayload {
+newtype PollPayload = PollPayload {
   _cmdids :: [Text]
   } deriving (Eq, Generic, Show)
 
@@ -230,7 +230,7 @@ instance FromJSON QueryJson where
   parseJSON _ = mzero
 
 
-data LedgerQueryBody = LedgerQueryBody { _filter :: QueryJson }
+newtype LedgerQueryBody = LedgerQueryBody { _filter :: QueryJson }
                        deriving (Show, Generic, Eq)
 
 instance ToJSON LedgerQueryBody where
@@ -288,7 +288,7 @@ instance FromJSON TransactRequest where
 --   "hash": "string",
 --   "key": "string"
 -- }
-data CommandBatch = CommandBatch {
+newtype CommandBatch = CommandBatch {
       _batchCmds :: [Text]
     } deriving (Eq,Show,Ord)
 
