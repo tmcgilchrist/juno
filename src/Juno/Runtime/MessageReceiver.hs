@@ -54,10 +54,10 @@ messageReceiver = do
     mapM_ debug invalidAers
     gm 50 >>= \s -> runReaderT (sequentialVerify ks s) env
     verifiedCmds <- parallelVerify ks <$> getCmds 5000
-    (invalidCmds, validCmds) <- return $ partitionEithers verifiedCmds
+    let (invalidCmds, validCmds) = partitionEithers verifiedCmds
     mapM_ debug invalidCmds
-    cmds@(CommandBatch cmds' _) <- return $ batchCommands validCmds
-    lenCmdBatch <- return $ length cmds'
+    let cmds@(CommandBatch cmds' _) = batchCommands validCmds
+    let lenCmdBatch = length cmds'
     unless (lenCmdBatch == 0) $ do
       enqueueEvent $ ERPC $ CMDB' cmds
       debug $ "AutoBatched " ++ show (length cmds') ++ " Commands"

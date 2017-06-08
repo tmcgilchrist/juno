@@ -10,7 +10,6 @@ module Hop.Apps.Juno.Parser (
   ,getAccountsFromTransferCommand
   ) where
 
-import Control.Monad
 import Control.Applicative
 import qualified Data.Attoparsec.ByteString.Char8 as Atto
 import Text.Parser.Char
@@ -198,7 +197,7 @@ instance Hopperify Transfer where
       go (Transfer (f':t':rest') a') = Let "t" (PrimApp "transfer" [ELit (LText f'),ELit (LText t'),ELit (LRational a'),ELit (LText "cryptSig")]) (go $ Transfer (t':rest') a')
 
 primOps :: (Monad m, TokenParsing m) => m Transfer
-primOps = liftM (uncurry Transfer) transfer
+primOps = fmap (uncurry Transfer) transfer
 
 transfer :: (Monad m, TokenParsing m) => m ([Text], Rational)
 transfer = do

@@ -37,7 +37,7 @@ handleRevolution :: (MonadReader RevolutionEnv m, MonadWriter [String] m) => Rev
 handleRevolution rev@Revolution{..} = do
   currentLeader' <- view currentLeader
   replayMap' <- view replayMap
-  revSig <- return $ getRevSigOrInvariantError "handleRevolution" rev
+  let revSig = getRevSigOrInvariantError "handleRevolution" rev
   if Map.notMember (_revClientId, revSig) replayMap'
   then
     case currentLeader' of

@@ -67,8 +67,7 @@ handleAEResponse aer@AppendEntriesResponse{..} = do
     mcp <- updateCommitProofMap aer <$> view commitProof
     role' <- view nodeRole
     currentTerm' <- view term
-    if (role' == Leader)
-    then
+    if role' == Leader then
       return $ case (isConvinced, isSuccessful, whereIsTheRequest currentTerm') of
         (NotConvinced, _, OldRequestTerm) -> AEResponseOut mcp $ Unconvinced _aerNodeId _aerNodeId
         (NotConvinced, _, CurrentRequestTerm) -> AEResponseOut mcp $ Unconvinced _aerNodeId _aerNodeId
@@ -83,7 +82,8 @@ handleAEResponse aer@AppendEntriesResponse{..} = do
         (Convinced, Success, OldRequestTerm) -> AEResponseOut mcp DoNothing
         -- We are a leader, in a term that hasn't happened yet?
         (_, _, NewerRequestTerm) -> AEResponseOut mcp DoNothing
-    else return $ AEResponseOut mcp NotLeader
+    else
+      return $ AEResponseOut mcp NotLeader
   where
     isConvinced = if _aerConvinced then Convinced else NotConvinced
     isSuccessful = if _aerSuccess then Success else Failure
@@ -132,7 +132,7 @@ handle ae = do
 handleAlotOfAers :: Monad m => AlotOfAERs -> JT.Raft m ()
 handleAlotOfAers (AlotOfAERs m) = do
   ks <- KeySet <$> view (JT.cfg . JT.publicKeys) <*> view (JT.cfg . JT.clientPublicKeys)
-  res <- return ((processSetAer ks <$> Map.elems m) `using` parList rseq)
+  let res = (processSetAer ks <$> Map.elems m) `using` parList rseq
   aers <- catMaybes <$> mapM (\(a,l) -> mapM_ debug l >> return a) res
   mapM_ handle aers
 

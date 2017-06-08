@@ -65,12 +65,12 @@ type instance IxValue (Log a) = a
 type instance Lens.Index (Log a) = LogIndex
 instance Ixed (Log a) where ix i = lEntries.ix (fromIntegral i)
 
-data LEWire = LEWire (Term, SignedRPC, ByteString)
+newtype LEWire = LEWire (Term, SignedRPC, ByteString)
   deriving (Show, Generic)
 instance Serialize LEWire
 
 decodeLEWire' :: Maybe ReceivedAt -> KeySet -> LEWire -> Either String LogEntry
-decodeLEWire' !ts !ks (LEWire !(t,cmd,hsh)) = case fromWire ts ks cmd of
+decodeLEWire' !ts !ks (LEWire (t,cmd,hsh)) = case fromWire ts ks cmd of
       Left !err -> Left $!err
       Right !cmd' -> Right $! LogEntry t cmd' hsh
 {-# INLINE decodeLEWire' #-}
@@ -88,7 +88,7 @@ decodeLEWire :: Maybe ReceivedAt -> KeySet -> [LEWire] -> Either String (Seq Log
 decodeLEWire !ts !ks !les = go les Seq.empty
   where
     go [] s = Right $! s
-    go (LEWire !(t,cmd,hsh):ls) v = case fromWire ts ks cmd of
+    go (LEWire (t,cmd,hsh):ls) v = case fromWire ts ks cmd of
       Left err -> Left $! err
       Right cmd' -> go ls (v |> LogEntry t cmd' hsh)
 {-# INLINE decodeLEWire #-}

@@ -71,7 +71,7 @@ instance FromJSON TransferJson where
                              <*> obj .: "amount"
                              <*> obj .: "currency"
 
-data TransferDataJson = TransferDataJson String deriving (Show, Eq)
+newtype TransferDataJson = TransferDataJson String deriving (Show, Eq)
 
 instance ToJSON TransferDataJson where
   toJSON (TransferDataJson databody) =
@@ -110,4 +110,4 @@ _goodRequest = JSON.encode $ TransactDemoRequest
               (TransferDataJson "test blob")
 
 _decodeTransDemoReq :: Maybe TransactDemoRequest
-_decodeTransDemoReq = JSON.decode $ _goodRequest :: Maybe TransactDemoRequest
+_decodeTransDemoReq = JSON.decode _goodRequest :: Maybe TransactDemoRequest

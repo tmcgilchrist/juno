@@ -93,7 +93,7 @@ compile (TList l) =
              return (PrimApp (T.drop 1 a) as)
       -- (lambda args body)
       [TAtom a,TList args,body] | a == "lambda" -> do
-             atoms <- case sequence . map (firstOf tAtom) $ args of
+             atoms <- case mapM (firstOf tAtom) args of
                  Nothing -> Left $ "Non-atom in lambda args: " ++ show args
                  Just v -> return v
              body' <- compile body
@@ -101,7 +101,7 @@ compile (TList l) =
       -- (atom a b ...)
       (TAtom a:args) -> do
              args' <- mapM compile args
-             return $ (V a :@ args')
+             return $ V a :@ args'
       _ -> Left $ "Unrecognized list form: " ++ show l
 compile (TAtom a) = return (V a)
 
@@ -124,7 +124,7 @@ compileFile f = do
 
 _runProgram :: PersistentState -> HopliteTerm -> InterpreterOutput
 _runProgram state p = case runExpr 10000 state ex of
-  Left e -> error $ "fail: " ++ (show e)
+  Left e -> error $ "fail: " ++ show e
   Right output -> output
   where
     (PolyF ex) = fromJust $ evaluableHopliteTerm p

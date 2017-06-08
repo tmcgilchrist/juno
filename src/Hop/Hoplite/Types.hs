@@ -2,10 +2,11 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE DeriveFunctor, DeriveFoldable, DeriveTraversable,DeriveAnyClass #-}
+{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE DeriveFoldable #-}
+{-# LANGUAGE DeriveTraversable #-}
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE StandaloneDeriving #-}
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE TypeOperators#-}
@@ -50,7 +51,7 @@ data TCon {-a -}=  TInteger | TNatural | TRational  | TUnit | TArrow RigModel
                 | PubKey String {- this is not how it'll work :) -}
                 -- | Linear
     deriving (Eq,Ord,Read,Show ,Data,Typeable,Generic)
-data Type ty  {-a -}=  Tapp (Type ty) (Type ty) | TLit (TCon) | TVar ty
+data Type ty  {-a -}=  Tapp (Type ty) (Type ty) | TLit TCon | TVar ty
    deriving (Eq1,Ord1,Show1,Read1,Eq,Ord,Read,Show,Data,Typeable,Functor,Foldable,Traversable,Generic)
 
 
@@ -58,20 +59,20 @@ data Type ty  {-a -}=  Tapp (Type ty) (Type ty) | TLit (TCon) | TVar ty
 -- probably change
 newtype Ref = Ref {refPointer :: Word64} deriving  (Eq,Show,Ord,Data,Typeable,Generic,Bounded)
 refRepLens :: Functor f =>(Word64 -> f a) -> Ref -> f a
-refRepLens = \ f (Ref r) -> f r
+refRepLens f (Ref r) = f r
 
 -- | interface for doing bitwise transformations that yield a new ref
 refTransform :: Functor f => (Word64 -> f Word64) -> Ref -> f Ref
-refTransform = \ f (Ref r) -> Ref <$> f r
+refTransform f (Ref r) = Ref <$> f r
 
 absoluteDistance  :: Ref -> Ref -> Word64
-absoluteDistance = \(Ref a) (Ref b) -> if a > b then a - b else b - a
+absoluteDistance (Ref a) (Ref b) = if a > b then a - b else b - a
 
 instance Enum Ref where
   succ rf@(Ref w) | rf < maxBound = Ref (1+ w)
-                  | otherwise = error $ "succ: Ref overflow"
+                  | otherwise = error "succ: Ref overflow"
   pred rf@(Ref w) | rf > minBound = Ref (w - 1)
-                  | otherwise = error $ "pred: Ref underflow"
+                  | otherwise = error "pred: Ref underflow"
   fromEnum (Ref w)
                 | w < fromIntegral (maxBound :: Int) = fromIntegral w
                 | otherwise =
@@ -142,7 +143,7 @@ codeValueF (VLitF _) = 1
 codeValueF (ConstructorF _ _ ) = 2
 codeValueF (ThunkF _) = 3
 codeValueF (DirectClosureF _) = 4
-codeValueF (BlackHoleF) = 5
+codeValueF BlackHoleF = 5
 codeValueF (IndirectionF _) = 6
 
 instance (Ord1 ast,Monad ast) => Ord1 (ValueF ast) where
@@ -156,7 +157,7 @@ instance (Ord1 ast,Monad ast) => Ord1 (ValueF ast) where
   compare1 (DirectClosureF a) (DirectClosureF b) = compare1 a b
   compare1 a@(DirectClosureF _) b = compare (codeValueF a) (codeValueF b)
   compare1 BlackHoleF BlackHoleF = EQ
-  compare1 a@(BlackHoleF) b = compare (codeValueF a) (codeValueF b)
+  compare1 a@BlackHoleF b = compare (codeValueF a) (codeValueF b)
   compare1 (IndirectionF a) (IndirectionF b) = compare a b  --- this is spiritually evil :))))
   compare1 a@(IndirectionF _ ) b = compare (codeValueF a) (codeValueF b)
 
@@ -170,7 +171,7 @@ instance Eq1 WrappedVector
 instance Ord1 WrappedVector
 instance Read1 WrappedVector
 
-data Arity = ArityBoxed {_extractArityInfo :: !Text} --- for now our model of arity is boring and simple
+newtype Arity = ArityBoxed {_extractArityInfo :: Text} --- for now our model of arity is boring and simple
                               -- for now lets keep the variable names?
                               -- it'll keep the debugging simpler (maybe?)
  deriving (Eq,Ord,Show,Read,Typeable,Data,Generic)
@@ -258,7 +259,7 @@ instance Traversable (Exp ty) where
   traverse f (PrimApp nm args) = PrimApp nm <$> traverse (traverse f) args
   traverse f (x :@ ys)   = (:@) <$> traverse f x <*> traverse (traverse f) ys
   traverse f (Lam t e)    = Lam  t <$> traverse f e
-  traverse f (Let mname mtype  bs b) = Let  mname mtype <$>  (traverse f) bs <*> traverse f b
+  traverse f (Let mname mtype  bs b) = Let  mname mtype <$> traverse f bs <*> traverse f b
 
 
 instance Monad (Exp ty) where
@@ -268,7 +269,7 @@ instance Monad (Exp ty) where
   Delay e     >>= f = Delay $ e >>= f
   Force e     >>= f = Force $ e >>= f
   ELit e      >>= _f = ELit e -- this could also safely be a coerce?
-  (x :@ y)    >>= f = (x >>= f) :@ (map (>>= f)  y )
+  (x :@ y)    >>= f = (x >>= f) :@ map (>>= f)  y
   (PrimApp name args) >>= f = PrimApp name (map (>>= f) args )
   Lam t  e    >>= f = Lam t (e >>>= f)
   Let mname mtype bs  b >>= f = Let mname mtype (  bs >>= f)  (b >>>= f)

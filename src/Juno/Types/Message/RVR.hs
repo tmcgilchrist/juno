@@ -38,7 +38,7 @@ data RequestVoteResponse = RequestVoteResponse
   deriving (Show, Eq, Ord, Generic)
 makeLenses ''RequestVoteResponse
 
-data RVRWire = RVRWire (Term,LogIndex,NodeID,Bool,NodeID)
+newtype RVRWire = RVRWire (Term,LogIndex,NodeID,Bool,NodeID)
   deriving (Show, Generic)
 instance Serialize RVRWire
 
@@ -55,7 +55,7 @@ instance WireFormat RequestVoteResponse where
       then error $ "Invariant Failure: attempting to decode " ++ show (_digType dig) ++ " with RVRWire instance"
       else case S.decode bdy of
         Left !err -> Left $! "Failure to decode RVRWire: " ++ err
-        Right (RVRWire !(t,li,nid,granted,cid)) -> Right $! RequestVoteResponse t li nid granted cid $ ReceivedMsg dig bdy ts
+        Right (RVRWire (t,li,nid,granted,cid)) -> Right $! RequestVoteResponse t li nid granted cid $ ReceivedMsg dig bdy ts
   {-# INLINE toWire #-}
   {-# INLINE fromWire #-}
 

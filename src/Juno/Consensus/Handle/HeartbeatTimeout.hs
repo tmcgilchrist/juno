@@ -53,5 +53,5 @@ handle msg = do
       JT.timeSinceLastAER %= (+ hbMicrosecs)
     NotLeader -> JT.timeSinceLastAER .= 0 -- probably overkill, but nice to know this gets set to 0 if not leader
     NoFollowers -> do
-      timeout' <- return $ JT._timeSinceLastAER s
+      let timeout' = JT._timeSinceLastAER s
       enqueueEvent $ ElectionTimeout $ "Leader has not hear from followers in: " ++ show (timeout' `div` 1000) ++ "ms"

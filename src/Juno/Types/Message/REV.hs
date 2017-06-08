@@ -25,7 +25,7 @@ data Revolution = Revolution
   deriving (Show, Eq, Generic)
 makeLenses ''Revolution
 
-data REVWire = REVWire (NodeID,NodeID,RequestId)
+newtype REVWire = REVWire (NodeID,NodeID,RequestId)
   deriving (Show, Generic)
 instance Serialize REVWire
 
@@ -42,6 +42,6 @@ instance WireFormat Revolution where
       then error $ "Invariant Failure: attempting to decode " ++ show (_digType dig) ++ " with REVWire instance"
       else case S.decode bdy of
         Left !err -> Left $! "Failure to decode REVWire: " ++ err
-        Right (REVWire !(cid,lid,rid)) -> Right $! Revolution cid lid rid $ ReceivedMsg dig bdy ts
+        Right (REVWire (cid,lid,rid)) -> Right $! Revolution cid lid rid $ ReceivedMsg dig bdy ts
   {-# INLINE toWire #-}
   {-# INLINE fromWire #-}

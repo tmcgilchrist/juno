@@ -61,7 +61,7 @@ startServer store host port = do
                Config.setAccessLog Config.ConfigNoLog $
                Config.setPort port $
                Config.setHostname host $
-               Config.setBind numericHost $
+               Config.setBind numericHost
                Config.defaultConfig
     httpServe conf (monitor store)
 
@@ -73,7 +73,7 @@ monitor store = do
     jsonHandler $ serve store
   where
     jsonHandler = wrapHandler "application/json"
-    wrapHandler fmt handler = method GET $ format fmt $ handler
+    wrapHandler fmt handler = method GET $ format fmt handler
 
 -- | The Accept header of the request.
 acceptHeader :: Request -> Maybe S.ByteString

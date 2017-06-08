@@ -48,7 +48,7 @@ showResult cmdStatusMap' rId pgm@(Just cnt) =
     (CommandMap _ m) <- readMVar cmdStatusMap'
     case Map.lookup rId m of
       Nothing -> print $ "RequestId [" ++ show rId ++ "] not found."
-      Just (CmdApplied (CommandResult _x) lat) -> do
+      Just (CmdApplied (CommandResult _x) lat) ->
         putStrLn $ intervalOfNumerous cnt lat
       Just _ -> -- not applied yet, loop and wait
         showResult cmdStatusMap' rId pgm
@@ -60,7 +60,7 @@ runREPL toCommands' cmdStatusMap' = do
   case cmd of
     "" -> runREPL toCommands' cmdStatusMap'
     _ -> do
-      cmd' <- return $ BSC.pack cmd
+      let cmd' = BSC.pack cmd
       if take 11 cmd == "batch test:"
       then case readMaybe $ drop 11 cmd of
         Just n -> do

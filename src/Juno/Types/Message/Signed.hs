@@ -66,7 +66,7 @@ class WireFormat a where
 
 -- | Based on the MsgType in the SignedRPC's Digest, we know which set of keys are needed to validate the message
 verifySignedRPC :: KeySet -> SignedRPC -> Either String ()
-verifySignedRPC !KeySet{..} s@(SignedRPC !Digest{..} !bdy)
+verifySignedRPC KeySet{..} s@(SignedRPC Digest{..} !bdy)
   | _digType == CMD || _digType == REV || _digType == CMDB =
       case Map.lookup _digNodeId _ksClient of
         Nothing -> Left $! "PubKey not found for NodeID: " ++ show _digNodeId

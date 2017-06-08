@@ -76,7 +76,7 @@ recipList (Rolodex r) (ROne addr) = return $! _unListenOn <$> [r Map.! addr]
 moreLogging :: String -> IO ()
 moreLogging msg = do
   (ZonedTime (LocalTime d' t') _) <- getZonedTime
-  putStrLn $ (showGregorian d') ++ "T" ++ (take 15 $ show t') ++ " [ZMQ]: " ++ msg
+  putStrLn $ showGregorian d' ++ "T" ++ take 15 (show t') ++ " [ZMQ]: " ++ msg
   hFlush stdout >> hFlush stderr
 
 
@@ -119,7 +119,7 @@ runMsgServer inboxWrite cmdInboxWrite aerInboxWrite rvAndRvrWrite outboxRead me 
       rolodex <- addNewAddrs (Rolodex Map.empty) addrList
       void $ sendProcess outboxRead rolodex
       liftIO $ moreLogging "Exiting ZMQ_SENDER"
-    liftIO $ (Async.waitEitherCancel zmqReceiver zmqSender) >>= \res' -> case res' of
+    liftIO $ Async.waitEitherCancel zmqReceiver zmqSender >>= \res' -> case res' of
       Left () -> liftIO $ moreLogging "ZMQ_RECEIVER returned with ()"
       Right v -> liftIO $ moreLogging $ "ZMQ_SENDER returned with " ++ show v
     liftIO $ moreLogging "Exiting ZMQ_THREAD"

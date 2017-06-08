@@ -29,7 +29,7 @@ data CommandResponse = CommandResponse
   deriving (Show, Eq, Generic)
 makeLenses ''CommandResponse
 
-data CMDRWire = CMDRWire (CommandResult, NodeID, NodeID, RequestId, Int64)
+newtype CMDRWire = CMDRWire (CommandResult, NodeID, NodeID, RequestId, Int64)
   deriving (Show, Generic)
 instance Serialize CMDRWire
 
@@ -46,6 +46,6 @@ instance WireFormat CommandResponse where
       then error $ "Invariant Failure: attempting to decode " ++ show (_digType dig) ++ " with CMDRWire instance"
       else case S.decode bdy of
         Left !err -> Left $! "Failure to decode CMDRWire: " ++ err
-        Right (CMDRWire !(r,lid,nid,rid,lat)) -> Right $! CommandResponse r lid nid rid lat $ ReceivedMsg dig bdy ts
+        Right (CMDRWire (r,lid,nid,rid,lat)) -> Right $! CommandResponse r lid nid rid lat $ ReceivedMsg dig bdy ts
   {-# INLINE toWire #-}
   {-# INLINE fromWire #-}

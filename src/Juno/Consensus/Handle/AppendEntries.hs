@@ -139,11 +139,11 @@ appendLogEntries :: (MonadWriter [String] m, MonadReader AppendEntriesEnv m)
                  => LogIndex -> Seq LogEntry -> m ValidResponse
 appendLogEntries pli newEs = do
   les <- view logEntries
-  logEntries'' <- return $ addLogEntriesAt pli newEs les
-  replay <- return $
-    foldl (\m LogEntry{_leCommand = c@Command{..}} ->
-            Map.insert (_cmdClientId, getCmdSigOrInvariantError "appendLogEntries" c) Nothing m)
-    Map.empty newEs
+  let logEntries'' = addLogEntriesAt pli newEs les
+  let replay =
+        foldl (\m LogEntry{_leCommand = c@Command{..}} ->
+                  Map.insert (_cmdClientId, getCmdSigOrInvariantError "appendLogEntries" c) Nothing m)
+              Map.empty newEs
   if entryCount les /= entryCount logEntries''
     then do
       tell ["replaying LogEntry(s): " ++ show (entryCount les) ++ " through " ++ show (entryCount logEntries'') ]
@@ -177,7 +177,7 @@ handle ae = do
               (JT._logEntries s)
               (JT._quorumSize r)
   (AppendEntriesOut{..}, l) <- runReaderT (runWriterT (handleAppendEntries ae)) ape
-  ci <- return $ JT._commitIndex s
+  let ci = JT._commitIndex s
   unless (ci == _prevLogIndex ae && length l == 1) $ mapM_ debug l
   applyNewLeader _newLeaderAction
   case _result of

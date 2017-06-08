@@ -69,7 +69,7 @@ getConfig = do
   argv <- getArgs
   case getOpt Permute options argv of
     (o,_,[]) -> do
-      opts <- return $ foldl (flip id) defaultOptions o
+      let opts = foldl (flip id) defaultOptions o
       conf <- Y.decodeFileEither $ optConfigFile opts
       case conf of
         Left err -> putStrLn (Y.prettyPrintParseException err) >> exitFailure
@@ -81,12 +81,12 @@ getConfig = do
 showDebug' :: String -> IO ()
 showDebug' msg = do
   (ZonedTime (LocalTime d t) _) <- getZonedTime
-  putStrLn $ (showGregorian d) ++ "T" ++ (take 15 $ show t) ++ " " ++ msg
+  putStrLn $ showGregorian d ++ "T" ++ take 15 (show t) ++ " " ++ msg
 
 showDebug :: NodeID -> String -> IO ()
 showDebug _ msg = do
   (ZonedTime (LocalTime d t) _) <- getZonedTime
-  putStrLn $ (showGregorian d) ++ "T" ++ (take 15 $ show t) ++ " " ++ msg
+  putStrLn $ showGregorian d ++ "T" ++ take 15 (show t) ++ " " ++ msg
 
 noDebug :: NodeID -> String -> IO ()
 noDebug _ _ = return ()
@@ -192,7 +192,7 @@ getBacklog m cnt = do
                 else do
                   s <- NoBlock.tryReadNext strm
                   case s of
-                    NoBlock.Next a strm' -> liftM (a:) (go strm' (cnt'-1))
+                    NoBlock.Next a strm' -> fmap (a:) (go strm' (cnt'-1))
                     NoBlock.Pending -> putMVar m strm >> return []
   blog <- go inboxRead cnt
   if blog /= []
@@ -200,7 +200,7 @@ getBacklog m cnt = do
     else threadDelay 1000 >> return []
 
 nodeIDtoAddr :: NodeID -> Addr String
-nodeIDtoAddr (NodeID _ _ a) = Addr $ a
+nodeIDtoAddr (NodeID _ _ a) = Addr a
 
 toMsg :: NodeID -> msg -> OutBoundMsg String msg
 toMsg n b = OutBoundMsg (ROne $ nodeIDtoAddr n) b
@@ -234,17 +234,17 @@ runClient :: (Command -> IO CommandResult) -> IO (RequestId, [CommandEntry]) -> 
 runClient applyFn getEntries cmdStatusMap' = do
   setLineBuffering
   rconf <- getConfig
-  me <- return $ nodeIDtoAddr $ rconf ^. nodeId
+  let me = nodeIDtoAddr $ rconf ^. nodeId
   (inboxWrite, inboxRead) <- NoBlock.newChan
-  inboxRead' <- newMVar =<< return . head =<< NoBlock.streamChan 1 inboxRead
+  inboxRead' <- newMVar =<< fmap head (NoBlock.streamChan 1 inboxRead)
   (cmdInboxWrite, cmdInboxRead) <- NoBlock.newChan
-  cmdInboxRead' <- newMVar =<< return . head =<< NoBlock.streamChan 1 cmdInboxRead
+  cmdInboxRead' <- newMVar =<< fmap head (NoBlock.streamChan 1 cmdInboxRead)
   (aerInboxWrite, aerInboxRead) <- NoBlock.newChan
-  aerInboxRead' <- newMVar =<< return . head =<< NoBlock.streamChan 1 aerInboxRead
+  aerInboxRead' <- newMVar =<< fmap head (NoBlock.streamChan 1 aerInboxRead)
   (rvAndRvrWrite, rvAndRvrRead) <- newChan
   (outboxWrite, outboxRead) <- newChan -- raft writes to outbox, client reads
   (eventWrite, eventRead) <- Bounded.newChan 20 -- timer events
-  let debugFn = if (rconf ^. enableDebug) then showDebug else noDebug
+  let debugFn = if rconf ^. enableDebug then showDebug else noDebug
   pubMetric <- startMonitoring rconf
   runMsgServer inboxWrite cmdInboxWrite aerInboxWrite rvAndRvrWrite outboxRead me [] -- ZMQ
   -- STUBs mocking
@@ -264,18 +264,18 @@ runJuno :: (Command -> IO CommandResult) -> InChan (RequestId, [CommandEntry])
 runJuno applyFn toCommands getApiCommands sharedCmdStatusMap = do
   setLineBuffering
   rconf <- getConfig
-  me <- return $ nodeIDtoAddr $ rconf ^. nodeId
+  let me = nodeIDtoAddr $ rconf ^. nodeId
   -- Start The Api Server, communicates with the Juno protocol via sharedCmdStatusMap
   -- API interface will run on 800{nodeNum} for now, where the nodeNum for 10003 is 3
   let myApiPort = rconf ^. apiPort -- passed in on startup (default 8000): `--apiPort 8001`
   void $ CL.fork $ runApiServer toCommands sharedCmdStatusMap myApiPort
 
   (inboxWrite, inboxRead) <- NoBlock.newChan
-  inboxRead' <- newMVar =<< return . head =<< NoBlock.streamChan 1 inboxRead -- all (!aer !cmds)
+  inboxRead' <- newMVar =<< fmap head (NoBlock.streamChan 1 inboxRead)
   (cmdInboxWrite, cmdInboxRead) <- NoBlock.newChan
-  cmdInboxRead' <- newMVar =<< return . head =<< NoBlock.streamChan 1 cmdInboxRead -- outside cmds
+  cmdInboxRead' <- newMVar =<< fmap head (NoBlock.streamChan 1 cmdInboxRead)
   (aerInboxWrite, aerInboxRead) <- NoBlock.newChan
-  aerInboxRead' <- newMVar =<< return . head =<< NoBlock.streamChan 1 aerInboxRead
+  aerInboxRead' <- newMVar =<< fmap head (NoBlock.streamChan 1 aerInboxRead)
   (rvAndRvrWrite, rvAndRvrRead) <- newChan
   (outboxWrite, outboxRead) <- newChan -- raft writes to outbox, client reads
   (eventWrite, eventRead) <- Bounded.newChan 20 -- timer events

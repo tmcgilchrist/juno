@@ -74,7 +74,7 @@ serveUI = do
 apiWrapper :: (BLC.ByteString -> Either BLC.ByteString [CommandEntry]) -> ReaderT ApiEnv Snap ()
 apiWrapper requestHandler = do
    modifyResponse $ setHeader "Content-Type" "application/json"
-   reqBytes <- (readRequestBody 1000000)
+   reqBytes <- readRequestBody 1000000
    case requestHandler reqBytes of
      Right cmdEntries -> do
          env <- ask
@@ -166,7 +166,7 @@ cmdBatchHandler bs =
 -- see juno/jmeter/juno_API_jmeter_test.jmx
 pollForResults :: ReaderT ApiEnv Snap ()
 pollForResults = do
-    maybePoll <- liftM JSON.decode (readRequestBody 1000000)
+    maybePoll <- fmap JSON.decode (readRequestBody 1000000)
     modifyResponse $ setHeader "Content-Type" "application/json"
     case maybePoll of
       Just (PollPayloadRequest (PollPayload cmdids) _) -> do
@@ -192,7 +192,7 @@ swiftSubmission :: ReaderT ApiEnv Snap ()
 swiftSubmission = do
   (ApiEnv aiToCommands aiCmdStatusMap) <- ask
   bdy <- readRequestBody 1000000
-  cmd <- return $ BLC.toStrict bdy
+  let cmd = BLC.toStrict bdy
   logError $ "swiftSubmission: " <> cmd
   let unparsedSwift = decodeUtf8 cmd
   case parseSwift unparsedSwift of
@@ -235,7 +235,7 @@ swiftHandler :: ReaderT ApiEnv Snap ()
 swiftHandler = do
   (ApiEnv aiToCommands aiCmdStatusMap) <- ask
   bdy <- readRequestBody 1000000
-  cmd <- return $ BLC.toStrict bdy
+  let cmd = BLC.toStrict bdy
   logError $ "swiftHandler: " <> cmd
   case parseSwift $ decodeUtf8 cmd of
      -- TODO: get to work with `errDone 400 $`
@@ -274,7 +274,7 @@ hopperHandler = do
   (ApiEnv aiToCommands aiCmdStatusMap) <- ask
   bdy <- readRequestBody 1000000
   logError $ "hopper: " <> BLC.toStrict bdy
-  cmd <- return $ BLC.toStrict bdy
+  let cmd = BLC.toStrict bdy
   case readHopper cmd of
     -- TODO: get to work with `errDone 400 $`
     Left err -> writeBS $ BSC.pack err

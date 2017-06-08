@@ -30,7 +30,7 @@ lf ^=<<. la = view lf >>= (use la >>=)
 prettyThreadDetails :: String -> IO ()
 prettyThreadDetails msg = do
   (ZonedTime (LocalTime d' t') _) <- getZonedTime
-  putStrLn $ (showGregorian d') ++ "T" ++ (take 15 $ show t') ++ " [THREAD]: " ++ msg
+  putStrLn $ showGregorian d' ++ "T" ++ take 15 (show t') ++ " [THREAD]: " ++ msg
   hFlush stdout >> hFlush stderr
 
 foreverRetry :: String -> IO () -> IO ()

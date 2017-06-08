@@ -64,16 +64,16 @@ commandGetter getEntries cmdStatusMap' = do
     (rid@(RequestId _), cmdEntries) <- getEntries
     -- support for special REPL command "> batch test:5000", runs hardcoded batch job
     cmds' <- case cmdEntries of
-               (CommandEntry cmd):[] | SB8.take 11 cmd == "batch test:" -> do
-                                          let missiles = take (batchSize cmd) $ repeat $ hardcodedTransfers nid
-                                          liftIO $ sequence $ missiles
+               [CommandEntry cmd] | SB8.take 11 cmd == "batch test:" -> do
+                                          let missiles = replicate (batchSize cmd) (hardcodedTransfers nid)
+                                          liftIO $ sequence missiles
                _ -> liftIO $ sequence $ fmap (nextRid nid) cmdEntries
     -- set current requestId in Raft to the value associated with this request.
     rid' <- setNextRequestId rid
     liftIO (modifyMVar_ cmdStatusMap' (\(CommandMap n m) -> return $ CommandMap n (Map.insert rid CmdAccepted m)))
     -- hack set the head to the org rid
     let cmds'' = case cmds' of
-                   ((Command entry nid' _ NewMsg):rest) -> (Command entry nid' rid' NewMsg):rest
+                   (Command entry nid' _ NewMsg : rest) -> Command entry nid' rid' NewMsg : rest
                    _ -> [] -- TODO: fix this
     enqueueEvent $ ERPC $ CMDB' $ CommandBatch cmds'' NewMsg
   where
@@ -82,14 +82,14 @@ commandGetter getEntries cmdStatusMap' = do
 
     nextRid :: NodeID -> CommandEntry -> IO Command
     nextRid nid entry = do
-      rid <- (setNextCmdRequestId cmdStatusMap')
+      rid <- setNextCmdRequestId cmdStatusMap'
       return (Command entry nid rid NewMsg)
 
     hardcodedTransfers :: NodeID -> IO Command
     hardcodedTransfers nid = nextRid nid transferCmdEntry
 
     transferCmdEntry :: CommandEntry
-    transferCmdEntry = (CommandEntry "transfer(Acct1->Acct2, 1 % 1)")
+    transferCmdEntry = CommandEntry "transfer(Acct1->Acct2, 1 % 1)"
 
 setNextRequestId :: Monad m => RequestId -> Raft m RequestId
 setNextRequestId rid = do

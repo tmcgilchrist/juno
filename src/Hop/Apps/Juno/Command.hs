@@ -48,7 +48,7 @@ setBalances bals ps = ps { DEval._persistentBalances = bals }
 --JunoEnv:  MVar (State, Map(TX -> Swift))
 runCommand :: JunoEnv -> Command -> IO CommandResult
 runCommand env Command{_cmdEntry = cmd'@_, _cmdRequestId = _} = do
-  mvar <- return $ getStateMVar env
+  let mvar = getStateMVar env
   orgState@(ps, ss, store) <- MV.takeMVar mvar -- persistent s, swift, prog input store
   let bals = balances ps
   case readHopper $ unCommandEntry cmd' of
@@ -66,13 +66,13 @@ runCommand env Command{_cmdEntry = cmd'@_, _cmdRequestId = _} = do
                     MV.putMVar mvar orgState
                     return "Account Already Exists"
                 else do
-                    MV.putMVar mvar $! (setBalances (Map.insert acct 0 bals) ps, ss, store)
+                    MV.putMVar mvar (setBalances (Map.insert acct 0 bals) ps, ss, store)
                     return $ BSC.pack $ "Created Account: " ++ show acct
 
             AdjustAccount acct amount ->
                 if Map.member acct bals
                 then do
-                    MV.putMVar mvar $! (setBalances (Map.adjust (+ amount) acct bals) ps, ss, store)
+                    MV.putMVar mvar (setBalances (Map.adjust (+ amount) acct bals) ps, ss, store)
                     return $ BSC.pack $ "Adjusted Account " ++ show acct ++ " by " ++ show amount
                 else do
                     MV.putMVar mvar orgState
@@ -88,13 +88,13 @@ runCommand env Command{_cmdEntry = cmd'@_, _cmdRequestId = _} = do
 
             CommandInputQuery _rid' -> do
                  MV.putMVar mvar orgState
-                 return $ BSC.pack $ "UNSUPPORTED" -- TODO show $ Map.lookup rid' store
+                 return $ BSC.pack "UNSUPPORTED" -- TODO show $ Map.lookup rid' store
 
-            Program input term -> do
+            Program input term ->
                 case DTerm.evaluableHopliteTerm term of
                     Nothing -> do
                       MV.putMVar mvar orgState
-                      return $  BSC.pack $ "Invalid Command or Program" ++ (show term)
+                      return $  BSC.pack $ "Invalid Command or Program" ++ show term
                     Just (DTerm.PolyF evaluableTerm) -> let ps' = createNonExistentAccts ps cmd' in
                         case DEval.runExpr 10000 ps' evaluableTerm of
                             Left err -> do
@@ -122,19 +122,19 @@ runCommand env Command{_cmdEntry = cmd'@_, _cmdRequestId = _} = do
                                            , "reason" .= show err]
                             Right (DEval.InterpreterOutput (DEval.InterpreterDiff _balsDiff _ops)
                                                         nextPs) -> do
-                                nextSs <- return $ Map.insert (ps' ^. DEval.persistentNextTxId) s ss
+                                let nextSs = Map.insert (ps' ^. DEval.persistentNextTxId) s ss
                                 MV.putMVar mvar (nextPs, nextSs, store)
-                                (DEval.TransactionId tid) <- return $ (ps' ^. DEval.persistentNextTxId)
+                                let (DEval.TransactionId tid) = ps' ^. DEval.persistentNextTxId
                                 return $ BLC.toStrict $ encode $
                                     object [ "status" .= ("Success" :: T.Text)
                                            , "transId" .= show tid
-                                           , "currentState" .= (BLC.unpack $ encodePretty
+                                           , "currentState" .= BLC.unpack (encodePretty
                                                                 (convertQuery (nextPs ^. DEval.persistentTxes, nextSs, store)))
                                            ]
 
             LedgerQueryCmd v -> do
               MV.putMVar mvar orgState
-              res <- return $ runQuery v (ps ^. DEval.persistentTxes, ss, store)
+              let res = runQuery v (ps ^. DEval.persistentTxes, ss, store)
               return $ BLC.toStrict $ encodePretty res
 
 createNonExistentAccts :: DEval.PersistentState -> CommandEntry -> DEval.PersistentState

@@ -1,6 +1,5 @@
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE RecordWildCards #-}
 
 module Juno.Runtime.Sender
   ( sendAppendEntries
@@ -98,7 +97,7 @@ sendAllAppendEntriesResponse = do
   ct <- use term
   nid <- view (cfg.nodeId)
   es <- use logEntries
-  aer <- return $ createAppendEntriesResponse' True True ct nid (maxIndex es) (lastLogHash es)
+  let aer = createAppendEntriesResponse' True True ct nid (maxIndex es) (lastLogHash es)
   oNodes <- view (cfg.otherNodes)
   sendRPCs $ (,aer) <$> Set.toList oNodes
 
@@ -128,5 +127,5 @@ sendRPCs rpcs = do
   myNodeId <- view (cfg.nodeId)
   privKey <- view (cfg.myPrivateKey)
   pubKey <- view (cfg.myPublicKey)
-  msgs <- return ((second (encodedRPC myNodeId privKey pubKey) <$> rpcs ) `using` parList rseq)
+  let msgs = (second (encodedRPC myNodeId privKey pubKey) <$> rpcs ) `using` parList rseq
   send msgs

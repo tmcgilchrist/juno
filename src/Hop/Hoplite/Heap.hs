@@ -1,10 +1,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE DeriveFunctor, DeriveFoldable, DeriveTraversable,DeriveAnyClass #-}
+{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE TypeFamilies, TypeOperators #-}
@@ -61,7 +61,7 @@ heapRefUpdate ref val (Heap ct mp)
 
 heapAllocateValue :: Heap ast   -> HeapVal ast   -> (Ref,Heap ast  )
 heapAllocateValue hp val = (_minMaxFreshRef hp
-                            , Heap (Ref $ (refPointer minmax) + 1) newMap)
+                            , Heap (Ref $ refPointer minmax + 1) newMap)
   where
       minmax = _minMaxFreshRef hp
       newMap = Map.insert minmax  val (_theHeap hp)
@@ -85,7 +85,7 @@ deriving instance (Show (ast Ref),Functor ast , Show1 ast ) => Show (CounterAndH
 deriving instance (Eq (ast Ref),Monad ast,Eq1 ast ) => Eq (CounterAndHeap ast)
 deriving instance (Ord (ast Ref), Monad ast, Ord1 ast) => Ord (CounterAndHeap ast)
 
-extractHeapCAH :: Functor f => ((Heap ast  ) ->  f (Heap ast  ))
+extractHeapCAH :: Functor f => (Heap ast   ->  f (Heap ast  ))
                   -> CounterAndHeap ast    -> f (CounterAndHeap ast  )
 extractHeapCAH fun cnh = fmap (\mp' -> cnh{_extractHeapCAH=mp'}) $ fun $ _extractHeapCAH cnh
 
@@ -104,11 +104,11 @@ instance PrimMonad m => PrimMonad (HeapStepCounterM ast m) where
 instance MT.MonadTrans (HeapStepCounterM ast) where
     lift m =  HSCM $ StateT (\ s -> fmap (\i -> (i,s)) m)
 instance Monad  n=>Applicative (HeapStepCounterM ast  n) where
-    pure  = \v ->  HSCM $ pure v
-    (<*>) = \ (HSCM f) (HSCM v) -> HSCM $ f <*> v
+    pure  v = HSCM $ pure v
+    (<*>) (HSCM f) (HSCM v) = HSCM $ f <*> v
 instance Monad m => Monad (HeapStepCounterM ast m) where
     return = pure
-    (>>=)= \ (HSCM mv) f -> HSCM (mv  >>= (_xtractHSCM. f))
+    (>>=) (HSCM mv) f = HSCM (mv >>= (_xtractHSCM . f))
 
 getHSCM ::Monad m => HeapStepCounterM ast  m (CounterAndHeap ast )
 getHSCM  = HSCM State.get
@@ -120,7 +120,7 @@ setHSCM v = HSCM $ State.put  v
 
 checkedCounterDecrement ::   HeapStepCounterM  ast  (STE (b :+ HeapError ) s) ()
 checkedCounterDecrement = do  cah <- getHSCM
-                              ct <- return $  _extractCounterCAH cah
+                              let ct = _extractCounterCAH cah
                               if ct <= 0
                                 then throwHeapError HeapStepCounterExceeded-- error "allowed step count exceeded, aborting"
                                 else setHSCM cah{_extractCounterCAH = ct - 1}

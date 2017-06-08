@@ -22,7 +22,7 @@ type STRep s a = State# s -> (# State# s, a #)
 
 instance Functor (STE e s) where
     fmap f (STE m) = STE $ \ s ->
-      case (m s) of { (# new_s, r #) ->
+      case m s of { (# new_s, r #) ->
       (# new_s, f r #) }
 
 instance Applicative (STE e s) where
@@ -34,13 +34,12 @@ instance Monad (STE e s) where
     {-# INLINE (>>)   #-}
     {-# INLINE (>>=)  #-}
     return x = STE (\ s -> (# s, x #))
-    m >> k   = m >>= \ _ -> k
+    m >> k   = m >>= const k
 
     (STE m) >>= k
       = STE (\ s ->
-        case (m s) of { (# new_s, r #) ->
-        case (k r) of { STE k2 ->
-        (k2 new_s) }})
+        case m s of { (# new_s, r #) ->
+        case k r of { STE k2 -> k2 new_s }})
 
 instance PrimMonad (STE e s) where
   type PrimState (STE e s) = s
@@ -84,7 +83,7 @@ runSTRep st_rep = case st_rep realWorld# of
 data STException   where
    STException :: Any -> STException
   deriving(Typeable)
-instance Show (STException) where
+instance Show STException where
   show (STException _) = "(STException  <OPAQUE HEAP REFERENCE HERE>)"
 instance  Exception STException
 

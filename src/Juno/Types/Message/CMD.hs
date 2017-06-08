@@ -29,7 +29,7 @@ data Command = Command
   deriving (Show, Eq, Generic)
 makeLenses ''Command
 
-data CMDWire = CMDWire !(CommandEntry, NodeID, RequestId)
+newtype CMDWire = CMDWire (CommandEntry, NodeID, RequestId)
   deriving (Show, Generic)
 instance Serialize CMDWire
 
@@ -47,7 +47,7 @@ instance WireFormat Command where
         then error $ "Invariant Failure: attempting to decode " ++ show (_digType dig) ++ " with CMDWire instance"
         else case S.decode bdy of
             Left !err -> Left $! "Failure to decode CMDWire: " ++ err
-            Right (CMDWire !(ce,nid,rid)) -> Right $! Command ce nid rid $ ReceivedMsg dig bdy ts
+            Right (CMDWire (ce,nid,rid)) -> Right $! Command ce nid rid $ ReceivedMsg dig bdy ts
   {-# INLINE toWire #-}
   {-# INLINE fromWire #-}
 

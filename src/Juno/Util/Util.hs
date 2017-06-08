@@ -49,7 +49,7 @@ debug s = do
   dontDebugFollower' <- view (cfg.dontDebugFollower)
   case role' of
     Leader -> dbg nid $ "\ESC[0;34m[LEADER]\ESC[0m: " ++ s
-    Follower -> when (not dontDebugFollower') $ dbg nid $ "\ESC[0;32m[FOLLOWER]\ESC[0m: " ++ s
+    Follower -> unless dontDebugFollower' $ dbg nid $ "\ESC[0;32m[FOLLOWER]\ESC[0m: " ++ s
     Candidate -> dbg nid $ "\ESC[1;33m[CANDIDATE]\ESC[0m: " ++ s
 
 randomRIO :: (Monad m, R.Random a) => (a,a) -> Raft m a

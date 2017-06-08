@@ -196,7 +196,7 @@ cmdStatusError = PollResult
 toText :: Show a => a -> Text
 toText = T.pack . show
 
-data PollResponse = PollResponse { _results :: [PollResult] }
+newtype PollResponse = PollResponse { _results :: [PollResult] }
   deriving (Eq, Generic, Show)
 
 instance ToJSON PollResponse where

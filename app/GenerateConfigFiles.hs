@@ -42,14 +42,14 @@ main = do
   case (mn,cn,debugFollower) of
     (Just n,Just c,Just df)-> do
       g <- newGenIO :: IO SystemRandom
-      keyMaps' <- return $! keyMaps $ makeKeys (n+c) g
-      clientIds <- return $ take c $ drop n nodes
+      let keyMaps' = keyMaps $ makeKeys (n+c) g
+      let clientIds = take c $ drop n nodes
       let isAClient nid _ = Set.member nid (Set.fromList clientIds)
       let isNotAClient nid _ = not $ Set.member nid (Set.fromList clientIds)
-      clusterKeyMaps <- return $ (Map.filterWithKey isNotAClient *** Map.filterWithKey isNotAClient) keyMaps'
-      clientKeyMaps <- return $ (Map.filterWithKey isAClient *** Map.filterWithKey isAClient) keyMaps'
-      clusterConfs <- return (createClusterConfig df clusterKeyMaps (snd clientKeyMaps) <$> take n nodes)
-      clientConfs <- return (createClientConfig df (snd clusterKeyMaps) clientKeyMaps <$> clientIds)
+      let clusterKeyMaps = (Map.filterWithKey isNotAClient *** Map.filterWithKey isNotAClient) keyMaps'
+      let clientKeyMaps = (Map.filterWithKey isAClient *** Map.filterWithKey isAClient) keyMaps'
+      let clusterConfs = createClusterConfig df clusterKeyMaps (snd clientKeyMaps) <$> take n nodes
+      let clientConfs = createClientConfig df (snd clusterKeyMaps) clientKeyMaps <$> clientIds
       mapM_ (\c' -> Y.encodeFile ("conf" </> show (_port $ _nodeId c') ++ "-cluster.yaml") c') clusterConfs
       mapM_ (\c' -> Y.encodeFile ("conf" </> show (_port $ _nodeId c') ++ "-client.yaml") c') clientConfs
     _ -> putStrLn "Failed to read either input into a number, please try again"

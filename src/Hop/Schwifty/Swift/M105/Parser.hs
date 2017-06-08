@@ -10,7 +10,6 @@ import Data.Maybe (fromJust)
 import qualified Data.Text as T
 import Text.Megaparsec
 import Text.Megaparsec.Text
-import Control.Monad
 import Control.Lens
 
 import Hop.Schwifty.Swift.M105.Types
@@ -53,7 +52,7 @@ instructionCode =
            >>= return . SameDayValue . fmap T.pack)
 
 transactionTypeCode :: Parser TransactionTypeCode
-transactionTypeCode = liftM (TransactionTypeCode . T.pack) $ count 3 alphaNumChar
+transactionTypeCode = fmap (TransactionTypeCode . T.pack) $ count 3 alphaNumChar
 
 valueParser :: Parser Value
 valueParser = do
@@ -64,7 +63,7 @@ valueParser = do
                  ((read amtPart :: Int) % (10 ^ length amtPart))
 
 currencyParser :: Parser Text
-currencyParser = liftM T.pack (count 3 alphaNumChar <?> "Currency as ISO 4217 (e.g. XXX)")
+currencyParser = fmap T.pack (count 3 alphaNumChar <?> "Currency as ISO 4217 (e.g. XXX)")
 
 vDateCurSetl :: Parser VDateCurSetl
 vDateCurSetl = do
@@ -80,7 +79,7 @@ currencyInstructedAmt = do
   return $ CurrencyInstructedAmt cur val
 
 exchangeRate :: Parser ExchangeRate
-exchangeRate = liftM ExchangeRate valueParser
+exchangeRate = fmap ExchangeRate valueParser
 
 idType :: Parser IdType
 idType = try (string "ARNU" >> return AlienReg)
@@ -108,11 +107,11 @@ account = do
   return $ Account $ T.pack acct
 
 identifierCode :: Parser IdentifierCode
-identifierCode = liftM (IdentifierCode . T.pack) $ space >> manyTill anyChar newline
+identifierCode = fmap (IdentifierCode . T.pack) $ space >> manyTill anyChar newline
 
 field50FIdentifier :: Parser Field50FIdentifier
-field50FIdentifier = try (liftM F50F_Account account)
-                  <|> liftM F50F_PartyId partyId
+field50FIdentifier = try (fmap F50F_Account account)
+                  <|> fmap F50F_PartyId partyId
 
 field50FExtra :: Parser Field50FExtra
 field50FExtra = try (space >> string "1/" >> manyTill anyChar newline >>= return . F50F_1_NameOrdCustomer . T.pack)
@@ -128,7 +127,7 @@ field50FExtras :: Parser [Field50FExtra]
 field50FExtras = manyTill field50FExtra eof
 
 invalidCustomerExtra :: Parser Text
-invalidCustomerExtra = liftM T.pack $ space >> manyTill anyChar newline
+invalidCustomerExtra = fmap T.pack $ space >> manyTill anyChar newline
 
 invalidCustomerExtras :: Parser (Maybe [Text])
 invalidCustomerExtras = optional $ someTill invalidCustomerExtra eof

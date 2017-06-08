@@ -43,15 +43,15 @@ data HopliteTerm = V  Text
 --     | DTLet String  (DTS a)  (Scope String DTS a)
 
 hopliteTerm2ScopedTerm :: HopliteTerm -> T.Exp () Text
-hopliteTerm2ScopedTerm (V str) = T.V $  str
+hopliteTerm2ScopedTerm (V str) = T.V str
 hopliteTerm2ScopedTerm (ELit l) = T.ELit l
 -- hopliteTerm2ScopedTerm (Force e) = T.Force  $ hopliteTerm2ScopedTerm e
 -- hopliteTerm2ScopedTerm (Delay e) = T.Delay $ hopliteTerm2ScopedTerm e
 hopliteTerm2ScopedTerm (f :@ lse) = hopliteTerm2ScopedTerm f T.:@ map hopliteTerm2ScopedTerm lse
 hopliteTerm2ScopedTerm (PrimApp nm ls) = T.PrimApp (T.PrimopId  nm) (map hopliteTerm2ScopedTerm ls)
 hopliteTerm2ScopedTerm (Lam args bod) = let dtsBod = hopliteTerm2ScopedTerm bod
-                                       in T.Lam  (map (\v -> (v,T.TVar (),T.Omega)) args) $  flip  abstract dtsBod (\var -> if  var `elem` args then Just $ var else Nothing)
-hopliteTerm2ScopedTerm (Let nm rhs bod) = T.Let (Just nm) Nothing (hopliteTerm2ScopedTerm rhs) $ flip abstract (hopliteTerm2ScopedTerm bod) (\var -> if var == nm then Just (Just nm) else Nothing )
+                                       in T.Lam  (map (\v -> (v,T.TVar (),T.Omega)) args) $  abstract (\ var -> if var `elem` args then Just var else Nothing) dtsBod
+hopliteTerm2ScopedTerm (Let nm rhs bod) = T.Let (Just nm) Nothing (hopliteTerm2ScopedTerm rhs) $ abstract (\ var -> if var == nm then Just (Just nm) else Nothing) (hopliteTerm2ScopedTerm bod)
 
 newtype PolyMF f = PolyMF { unPolyF :: forall a . Maybe (f a) }
 newtype PolyF f = PolyF { unPolyF2 :: forall a . f a }

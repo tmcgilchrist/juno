@@ -63,7 +63,7 @@ handleRequestVoteResponse rvr@RequestVoteResponse{..} = do
 checkElection :: (MonadReader RequestVoteResponseEnv m, MonadWriter [String] m) =>
                  Set.Set RequestVoteResponse -> m RequestVoteResponseOut
 checkElection votes = do
-  nyes <- return $ Set.size votes
+  let nyes = Set.size votes
   qsize <- view quorumSize
   tell ["yes votes: " ++ show nyes ++ " quorum size: " ++ show qsize]
   if nyes >= qsize

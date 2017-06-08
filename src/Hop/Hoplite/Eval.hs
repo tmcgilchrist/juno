@@ -157,7 +157,7 @@ evalExp _stk (Delay _e) = throwInterpError $ UnsupportedTermConstructFailure "De
 evalExp stk (funE :@ args) = evalClosureApp (FunAppCtxt [] (funE:args) stk )
 evalExp stk (ELit l) = do ref <- lift $ heapAllocate (VLitF l) ; applyStack stk (VLitF l, ref)
 evalExp stk (PrimApp name args) = evalPrimApp (PrimAppCtxt name [] args stk )
-evalExp stk (Lam ts bod) = do val <- return (DirectClosureF (MkClosure (map (ArityBoxed . view _1 )ts ) bod))
+evalExp stk (Lam ts bod) = do let val = DirectClosureF (MkClosure (map (ArityBoxed . view _1 )ts ) bod)
                               ref <- lift $ heapAllocate val
                               applyStack stk (val,ref)
 evalExp stk (Let mv _mty rhsExp scp) = evalExp (LetContext mv scp stk) rhsExp
@@ -193,16 +193,16 @@ evalClosureApp (FunAppCtxt ls [] stk) = do
       | otherwise -> throwInterpError ArityMismatchFailure
     _ -> throwInterpError NonClosureInApplicationPosition
 evalClosureApp (FunAppCtxt ls (h : t) stk) = evalExp (FunAppCtxt ls t stk) h
-evalClosureApp (LetContext {}) = throwInterpError MismatchedStackContext
-evalClosureApp (PrimAppCtxt {}) = throwInterpError MismatchedStackContext
+evalClosureApp LetContext {} = throwInterpError MismatchedStackContext
+evalClosureApp PrimAppCtxt {} = throwInterpError MismatchedStackContext
 evalClosureApp SCEmpty = throwInterpError MismatchedStackContext
 
 
 evalPrimApp ::(Show ty, Ord ty) => ExpContext ty Ref -> InterpStack s ty b (HeapVal (Exp ty), Ref)
 evalPrimApp (PrimAppCtxt nm args [] stk) = do noBlackholeArgs args ; applyPrim stk nm $ reverse args
 evalPrimApp (PrimAppCtxt nm args (h:t) stk) = evalExp (PrimAppCtxt nm args t stk) h
-evalPrimApp (LetContext {}) = throwInterpError MismatchedStackContext
-evalPrimApp (FunAppCtxt {}) = throwInterpError MismatchedStackContext
+evalPrimApp LetContext {} = throwInterpError MismatchedStackContext
+evalPrimApp FunAppCtxt {} = throwInterpError MismatchedStackContext
 evalPrimApp SCEmpty = throwInterpError MismatchedStackContext
 
 
@@ -254,7 +254,7 @@ applyRationalArithmetic f [ref1, ref2] = do
   (ratLit2, _posRatRef) <- lift $ heapRefLookupTransitive ref2
   case (ratLit1, ratLit2) of
     (VLitF (LRational rat1), VLitF (LRational rat2)) -> do
-      val <- return $ VLitF $ LRational $ rat1 `f` rat2
+      let val = VLitF $ LRational $ rat1 `f` rat2
       ref <- lift $ heapAllocate val
       return (val,ref)
     b -> error $ "deep invariant failure: bad args to arithmetic primop, the arguments were" ++ show b
@@ -281,7 +281,7 @@ applyPrimDemo (PrimopId "transfer") [fromRef,toRef,posRatRef,fakeCryptoSigRef] =
                       InterpreterOverlay nextOpId mp <- get
                       tell [(nextOpId, Cmd fromNm toNm amt demoSig)]
                       put $ InterpreterOverlay (succ nextOpId) mp
-                      val <- return $ VLitF $ LText $ pack "success"
+                      let val = VLitF $ LText $ pack "success"
                       ref <- lift $ heapAllocate val -- this shoudld be unit, but whatever
                       return (val,ref)
               _bad -> throwInterpError $ PrimFailure $ "invalid account(s)" ++ show (fromNm, toNm)

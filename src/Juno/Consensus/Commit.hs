@@ -66,25 +66,25 @@ applyCommand tEnd cmd@Command{..} = do
   result <- apply cmd
   updateCmdStatusMap cmd result tEnd -- shared with the API and to query state
   replayMap %= Map.insert (_cmdClientId, getCmdSigOrInvariantError "applyCommand" cmd) (Just result)
-  ((,) _cmdClientId) <$> makeCommandResponse tEnd cmd result
+  (,) _cmdClientId <$> makeCommandResponse tEnd cmd result
 
 updateCmdStatusMap :: Monad m => Command -> CommandResult -> UTCTime -> Raft m ()
 updateCmdStatusMap cmd cmdResult tEnd = do
-  rid <- return $ _cmdRequestId cmd
+  let rid = _cmdRequestId cmd
   mvarMap <- view (rs.cmdStatusMap)
   updateMapFn <- view (rs.updateCmdMap)
-  lat <- return $ case _pTimeStamp $ _cmdProvenance cmd of
-    Nothing -> 1 -- don't want a div by zero error downstream and this is for demo purposes
-    Just (ReceivedAt tStart) -> interval tStart tEnd
+  let lat = case _pTimeStamp $ _cmdProvenance cmd of
+        Nothing -> 1 -- don't want a div by zero error downstream and this is for demo purposes
+        Just (ReceivedAt tStart) -> interval tStart tEnd
   void $ updateMapFn mvarMap rid (CmdApplied cmdResult lat)
 
 makeCommandResponse :: Monad m => UTCTime -> Command -> CommandResult -> Raft m CommandResponse
 makeCommandResponse tEnd cmd result = do
   nid <- view (cfg.nodeId)
   mlid <- use currentLeader
-  lat <- return $ case _pTimeStamp $ _cmdProvenance cmd of
-    Nothing -> 1 -- don't want a div by zero error downstream and this is for demo purposes
-    Just (ReceivedAt tStart) -> interval tStart tEnd
+  let lat = case _pTimeStamp $ _cmdProvenance cmd of
+              Nothing -> 1 -- don't want a div by zero error downstream and this is for demo purposes
+              Just (ReceivedAt tStart) -> interval tStart tEnd
   return $ makeCommandResponse' nid mlid cmd result lat
 
 makeCommandResponse' :: NodeID -> Maybe NodeID -> Command -> CommandResult -> Int64 -> CommandResponse
@@ -142,11 +142,12 @@ updateCommitIndex = do
 checkCommitProof :: Int -> Log LogEntry -> LogIndex -> [AppendEntriesResponse] -> Either Int LogIndex
 checkCommitProof qsize les maxLogIdx evidence = go 0 evidence
   where
-    go n [] = Left n
-    go n (ev:evs) = if _aerIndex ev > maxLogIdx
-                    then go n evs
-                    else if Just (_aerHash ev) == (_leHash <$> lookupEntry (_aerIndex ev) les)
-                         then if (n+1) >= qsize
-                              then Right $ _aerIndex ev
-                              else go (n+1) evs
-                         else go n evs
+    go n        []               = Left n
+    go n (ev : evs)
+      | _aerIndex ev > maxLogIdx = go n evs
+      | Just (_aerHash ev) == (_leHash <$> lookupEntry (_aerIndex ev) les)
+                                 = if (n + 1) >= qsize then
+                                     Right $ _aerIndex ev
+                                   else
+                                     go (n + 1) evs
+      | otherwise                = go n evs

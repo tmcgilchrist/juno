@@ -35,7 +35,7 @@ data AppendEntries = AppendEntries
   deriving (Show, Eq, Generic)
 makeLenses ''AppendEntries
 
-data AEWire = AEWire (Term,NodeID,LogIndex,Term,[LEWire],[SignedRPC])
+newtype AEWire = AEWire (Term,NodeID,LogIndex,Term,[LEWire],[SignedRPC])
   deriving (Show, Generic)
 instance Serialize AEWire
 

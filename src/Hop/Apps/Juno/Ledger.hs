@@ -134,7 +134,7 @@ convertAmount m = fromRational $ wholeDollars + cents
    stupidCents :: Ratio Int
    stupidCents =  m ^. sCode32A . vcsSettlementAmount . vPart
    cents :: Rational
-   cents = (fromIntegral $ numerator stupidCents) % (fromIntegral $ denominator stupidCents)
+   cents = fromIntegral (numerator stupidCents) % fromIntegral (denominator stupidCents)
 
 dirtyPickOutAccount50a :: SWIFT -> Text
 dirtyPickOutAccount50a s = case s ^? (sCode50a . ocA_Account . unAccount) of

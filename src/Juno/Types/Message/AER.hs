@@ -48,7 +48,7 @@ instance Ord AppendEntriesResponse where
   (AppendEntriesResponse t n s c i h v p) <= (AppendEntriesResponse t' n' s' c' i' h' v' p') =
     (n,t,i,h,v,s,c,p) <= (n',t',i',h',v',s',c',p')
 
-data AERWire = AERWire (Term,NodeID,Bool,Bool,LogIndex,ByteString)
+newtype AERWire = AERWire (Term,NodeID,Bool,Bool,LogIndex,ByteString)
   deriving (Show, Generic)
 instance Serialize AERWire
 
@@ -70,7 +70,7 @@ instance WireFormat AppendEntriesResponse where
       then error $ "Invariant Failure: attempting to decode " ++ show (_digType dig) ++ " with AERWire instance"
       else case S.decode bdy of
         Left !err -> Left $! "Failure to decode AERWire: " ++ err
-        Right (AERWire !(t,nid,s',c,i,h)) -> Right $! AppendEntriesResponse t nid s' c i h True $ ReceivedMsg dig bdy ts
+        Right (AERWire (t,nid,s',c,i,h)) -> Right $! AppendEntriesResponse t nid s' c i h True $ ReceivedMsg dig bdy ts
   {-# INLINE toWire #-}
   {-# INLINE fromWire #-}
 
