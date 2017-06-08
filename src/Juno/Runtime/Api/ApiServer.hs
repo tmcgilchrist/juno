@@ -1,9 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Juno.Runtime.Api.ApiServer
-  (runApiServer
-  ) where
-
 -- | Api server is the interface between outside clients
 --   and the internal Juno/Raft protocol.
 --   Responible for:
@@ -12,16 +8,20 @@ module Juno.Runtime.Api.ApiServer
 --   * check status of command, i.e. communication between API server and Raft (MVar for now, but this could be redis or another key value store running on every node
 --   * Parse Commands, and change CommandEntry -> [Command (with nodeId)] .. should this happen here? Or should that be in the protocol?
 
-import Control.Applicative
-import Control.Concurrent.Chan.Unagi
-import Control.Monad.Reader
+module Juno.Runtime.Api.ApiServer
+  (runApiServer
+  ) where
 
-import Snap.Http.Server
-import Snap.Core
-import Snap.CORS
+import           Control.Applicative
+import           Control.Concurrent.Chan.Unagi
+import           Control.Monad.Reader
 
-import Apps.Juno.ApiHandlers
-import Juno.Types hiding (Config)
+import           Snap.Core
+import           Snap.CORS
+import           Snap.Http.Server
+
+import           Apps.Juno.ApiHandlers
+import           Juno.Types                    hiding (Config)
 
 -- |
 -- Starts the API server which will listen on a port for incoming client

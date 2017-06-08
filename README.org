@@ -1,0 +1,108 @@
+* overview
+
+- Paxos : consensus in a network of unreliable processors
+  - https://en.wikipedia.org/wiki/Paxos_(computer_science)
+  - but hard to understand, thus Raft:
+
+- Raft : "equivalent" to Paxos, but understandable
+  - https://raft.github.io/
+  - https://raft.github.io/raft.pdf
+  - but Byzantine servers break Raft, thus: Tangaroa:
+
+- Tangaroa : Byzantine Fault Tolerant Raft
+  - [[http://www.scs.stanford.edu/14au-cs244b/labs/projects/copeland_zhong.pdf]]
+  - [[https://github.com/chrisnc/tangaroa]]
+  - "Practical Byzantine Fault Tolerance", Miguel Castro and Barbara Liskov
+    - http://pmg.csail.mit.edu/papers/osdi99.pdf
+  - just does consensus, not smart contracts, thus Juno:
+
+- Juno : Smart Contracts Running on a BFT Hardened Raft
+  - https://github.com/kadena-io/juno
+
+See the [[./README-ORIGINAL.md][original README]] (and also for instructions to run with tmux and rlwrap).
+
+* requirements
+
+Install [[http://zeromq.org/][zeromq]] < 5.
+
+#+begin_example
+# Mac OS:
+brew install zeromq
+#+end_example
+
+* build, run, terminate
+
+** build
+
+#+begin_example
+stack test
+#+end_example
+
+** run
+
+In a terminal:
+
+#+begin_example
+./demo/start-no-tmux.sh > /tmp/JUNO-LOGS
+#+end_example
+
+In a different terminal:
+
+#+begin_example
+./junoclient-no-rlwrap.sh
+#+end_example
+
+In the client terminal, interact as shown (=`# =>`= added to indicate what client returns):
+
+#+begin_example
+ObserveAccount foo
+# => Nothing
+
+CreateAccount foo
+# => Created Account: "foo"
+
+ObserveAccount foo
+# => Just (0 % 1)
+
+AdjustAccount foo (200%1)
+# => Adjusted Account "foo" by 200 % 1
+
+ObserveAccount foo
+# => Just (200 % 1)
+
+CreateAccount bar
+# => Created Account: "bar"
+
+transfer(foo->bar,101%100)
+# => Success
+## Transaction Log ##
+Transfer 1.01 from foo to bar with signature: cryptSig
+
+## Previous Ledger ##
+Account: Amount
+----------------------
+bar: 0.0
+foo: 200.0
+
+## New Ledger ##
+Account: Amount
+----------------------
+bar: 1.01
+foo: 198.99
+
+ObserveAccounts
+# =>
+Account: Amount
+----------------------
+bar: 1.01
+foo: 198.99
+#+end_example
+
+** termination
+
+Do =^C= in both terminals. Then:
+
+#+begin_example
+rm /tmp/JUNO-LOGS
+#+end_example
+
