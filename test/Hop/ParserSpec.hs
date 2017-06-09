@@ -30,19 +30,30 @@ testAdmins = do
              `shouldBe` Right (CreateAccount "foo")
 
 testHopperLite :: Spec
-testHopperLite = do
-  it "does the thing" $ readHopper "transfer(foo->bar,101%100)" `shouldBe`
-         Right (Program T.empty (Let "t" (PrimApp "transfer"
-                                   [ELit (LText "foo"),ELit (LText "bar"),
-                                    ELit (LRational (101 % 100)),ELit (LText "cryptSig")])
-                                 (V "t")))
+testHopperLite =
+  it "does the thing" $
+    readHopper "transfer(foo->bar,101%100)"
+    `shouldBe`
+    Right (Program
+            T.empty
+            (Let "t" (PrimApp "transfer"
+                       [ ELit (LText "foo")
+                       , ELit (LText "bar")
+                       , ELit (LRational (101 % 100))
+                       , ELit (LText "cryptSig")
+                       ])
+              (V "t")))
 
 
 testTransmatic :: Spec
-testTransmatic = do
-  it "does the stuff" $ readHopper "(#transfer \"foo\" \"bar\" (% 110 100) \"baz\")" `shouldBe`
-     Right (Program  T.empty (PrimApp "transfer"
-                              [ELit (LText "foo"),
-                               ELit (LText "bar"),
-                               ELit (LRational (11 % 10)),
-                               ELit (LText "baz")]))
+testTransmatic =
+  it "does the stuff" $
+    readHopper "(#transfer \"foo\" \"bar\" (% 110 100) \"baz\")"
+    `shouldBe`
+    Right (Program
+           T.empty
+           (PrimApp "transfer"
+             [ ELit (LText "foo")
+             , ELit (LText "bar")
+             , ELit (LRational (11 % 10))
+             , ELit (LText "baz")]))

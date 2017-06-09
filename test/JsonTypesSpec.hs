@@ -61,12 +61,12 @@ testJsonPoll = do
   it "encoding PollResult" $
      encodePollResult
      `shouldBe`
-      (BL.pack "{\"status\":\"Accepted\",\"cmdid\":\"1\",\"payload\":\"res payload\",\"message\":\"nothing to say\",\"logidx\":-1}")
+     BL.pack "{\"status\":\"Accepted\",\"cmdid\":\"1\",\"payload\":\"res payload\",\"message\":\"nothing to say\",\"logidx\":-1}"
 
   it "decode pollPayloadReqeust" $
      decodePollPayloadRequest
      `shouldBe`
-     Just (PollPayloadRequest {_pollPayload = PollPayload {_cmdids = ["1","2","3"]}, _pollDigest = Digest {_hash = "hashy", _key = "mykey"}})
+     Just PollPayloadRequest {_pollPayload = PollPayload {_cmdids = ["1","2","3"]}, _pollDigest = Digest {_hash = "hashy", _key = "mykey"}}
 
   it "decode PollPayload only" $
      decodePollPayload
@@ -124,7 +124,7 @@ encodeAdjustRequest = encode $
                                            (Digest (T.pack "hashy") (T.pack "mykey"))
 
 decodeAdjustRequest :: Maybe AccountAdjustRequest
-decodeAdjustRequest = (decode adjustRequestPayloadBS :: Maybe AccountAdjustRequest)
+decodeAdjustRequest = decode adjustRequestPayloadBS
 
 -- | poll cmds helpers
 
@@ -137,13 +137,13 @@ pollRequestByteString :: BL.ByteString
 pollRequestByteString = BL.pack "{\"payload\":{\"cmdids\":[\"1\",\"2\",\"3\"]},\"digest\":{\"hash\":\"hashy\",\"key\":\"mykey\"}}"
 
 decodePollPayloadRequest :: Maybe PollPayloadRequest
-decodePollPayloadRequest = (decode pollRequestByteString :: Maybe PollPayloadRequest)
+decodePollPayloadRequest = decode pollRequestByteString
 
 decodedPollPayloadRequest :: Maybe PollPayloadRequest
 decodedPollPayloadRequest = Just PollPayloadRequest {_pollPayload = PollPayload {_cmdids = ["1","2","3"]}, _pollDigest = Digest {_hash = "hashy", _key = "mykey"}}
 
 decodePollPayload :: Maybe PollPayload
-decodePollPayload = (decode pollPayloadByteString :: Maybe PollPayload)
+decodePollPayload = decode pollPayloadByteString
                     where
                       pollPayloadByteString :: BL.ByteString
                       pollPayloadByteString = "{\"cmdids\":[\"1\",\"2\",\"3\"]}"
@@ -153,7 +153,7 @@ encodePollResult :: BL.ByteString
 encodePollResult = encode PollResult {
                              _pollStatus = "Accepted"
                             , _pollCmdId = "1"
-                            , _logidx = (-1)
+                            , _logidx = -1
                             , _pollMessage = "nothing to say"
                             , _pollResPayload = "res payload"
                            }
@@ -169,7 +169,7 @@ ledgerQueryEncode :: BL.ByteString
 ledgerQueryEncode = encode $ LedgerQueryBody queryTxOne
 
 ledgerQueryDecode :: Maybe LedgerQueryBody
-ledgerQueryDecode = (decode "{\"filter\":{\"tx\":1,\"sender\":null,\"receiver\":null,\"account\":null}}") :: Maybe LedgerQueryBody
+ledgerQueryDecode = decode "{\"filter\":{\"tx\":1,\"sender\":null,\"receiver\":null,\"account\":null}}"
 
 ledgerQueryRequestEncode :: BL.ByteString
 ledgerQueryRequestEncode = encode $ LedgerQueryRequest (LedgerQueryBody queryTxOne) dig
@@ -178,7 +178,7 @@ ledgerQueryRequestBS :: BL.ByteString
 ledgerQueryRequestBS = "{\"payload\":{\"filter\":{\"tx\":1,\"sender\":null,\"account\":null,\"receiver\":null}},\"digest\":{\"hash\":\"hashy\",\"key\":\"mykey\"}}"
 
 ledgerQueryRequestDecode :: Maybe LedgerQueryRequest
-ledgerQueryRequestDecode = (decode "{\"payload\":{\"filter\":{\"tx\":1,\"sender\":\"\",\"receiver\":\"\",\"account\":\"\"}},\"digest\":{\"hash\":\"hashy\",\"key\":\"mykey\"}}") :: Maybe LedgerQueryRequest
+ledgerQueryRequestDecode = decode "{\"payload\":{\"filter\":{\"tx\":1,\"sender\":\"\",\"receiver\":\"\",\"account\":\"\"}},\"digest\":{\"hash\":\"hashy\",\"key\":\"mykey\"}}"
 
 ledgerQueryRequest :: LedgerQueryRequest
 ledgerQueryRequest = LedgerQueryRequest {
