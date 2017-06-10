@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module App.X.Client
+module Apps.X.Client
   ( main
   ) where
 
@@ -18,7 +18,7 @@ import GHC.Int (Int64)
 import Juno.Spec.Simple
 import Juno.Types
 
-import App.X.Parser
+import Apps.X.Parser
 
 prompt :: String
 prompt = "\ESC[0;31min>> \ESC[0m"

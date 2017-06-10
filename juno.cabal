@@ -17,27 +17,25 @@ source-repository head
   location:            git@github.com:haroldcarr/juno.git
 
 library
-  exposed-modules:     Juno.Consensus.Api
+  exposed-modules:     Juno.Consensus.Client
+                     , Juno.Consensus.Commit
                      , Juno.Consensus.Handle
                      , Juno.Consensus.Server
-                     , Juno.Consensus.Client
-                     , Juno.Consensus.Commit
-                     , Juno.Consensus.Handle.Types
                      , Juno.Consensus.Handle.AppendEntries
                      , Juno.Consensus.Handle.AppendEntriesResponse
                      , Juno.Consensus.Handle.Command
-                     , Juno.Consensus.Handle.RequestVote
-                     , Juno.Consensus.Handle.RequestVoteResponse
                      , Juno.Consensus.Handle.ElectionTimeout
                      , Juno.Consensus.Handle.HeartbeatTimeout
+                     , Juno.Consensus.Handle.RequestVote
+                     , Juno.Consensus.Handle.RequestVoteResponse
                      , Juno.Consensus.Handle.Revolution
+                     , Juno.Consensus.Handle.Types
                      , Juno.Messaging.Types
                      , Juno.Messaging.ZMQ
                      , Juno.Monitoring.EkgJson
                      , Juno.Monitoring.EkgMonitor
                      , Juno.Monitoring.EkgSnap
                      , Juno.Monitoring.Server
-                     , Juno.Persistence.SQLite
                      , Juno.Runtime.MessageReceiver
                      , Juno.Runtime.Role
                      , Juno.Runtime.Sender
@@ -50,22 +48,22 @@ library
                      , Juno.Types.Event
                      , Juno.Types.Log
                      , Juno.Types.Message
-                     , Juno.Types.Message.Signed
                      , Juno.Types.Message.CMD
                      , Juno.Types.Message.CMDR
                      , Juno.Types.Message.AE
                      , Juno.Types.Message.AER
+                     , Juno.Types.Message.REV
                      , Juno.Types.Message.RV
                      , Juno.Types.Message.RVR
-                     , Juno.Types.Message.REV
+                     , Juno.Types.Message.Signed
                      , Juno.Types.Metric
                      , Juno.Types.Spec
                      , Juno.Util.Combinator
                      , Juno.Util.Util
-                     , App.X.Client
-                     , App.X.Command
-                     , App.X.Parser
-                     , App.X.Server
+                     , Apps.X.Client
+                     , Apps.X.Command
+                     , Apps.X.Parser
+                     , Apps.X.Server
   build-depends:       SHA2
                      , aeson
                      , aeson-pretty

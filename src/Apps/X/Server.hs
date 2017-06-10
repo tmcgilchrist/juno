@@ -1,10 +1,10 @@
-module App.X.Server
+module Apps.X.Server
   ( main
   ) where
 
 import Control.Concurrent.Chan.Unagi
 
-import App.X.Command
+import Apps.X.Command
 import Juno.Spec.Simple
 import Juno.Types (CommandResult, initCommandMap)
 import Juno.Types.Message.CMD (Command(..))

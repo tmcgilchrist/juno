@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveAnyClass #-}
 
-module App.X.Parser
+module Apps.X.Parser
   ( XCommand (..)
   , readX
   ) where

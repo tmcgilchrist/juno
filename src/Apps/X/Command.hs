@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
 
-module App.X.Command where
+module Apps.X.Command where
 
 import Data.Either ()
 import qualified Data.Map.Strict as Map
@@ -15,7 +15,7 @@ import Control.Exception (SomeException, handle)
 import Juno.Types (CommandEntry(..), CommandResult(..))
 import Juno.Types.Message.CMD
 
-import App.X.Parser
+import Apps.X.Parser
 -- import Hop.Apps.Juno.Ledger (runQuery, convertQuery)
 
 -- state

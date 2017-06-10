@@ -8,7 +8,8 @@ I am using this fork of Juno to learn and experiment with
 * changes made since forking
 
 - removed all Hopper related code
-- removed ApiServer (for now)
+- removed Consensus.Api and Juno.Runtime.Api.ApiServer (for now)
+- removed Persistence.SQLite
 
 * background
 
@@ -31,7 +32,7 @@ I am using this fork of Juno to learn and experiment with
 - Juno : Smart Contracts Running on a BFT Hardened Raft
   - https://github.com/kadena-io/juno
 
-See the [[./README-ORIGINAL.md][original README]] (and also for instructions to run with tmux and rlwrap).
+See the [[./z-no-longer-used/README-KADENA.md][original README]] (and also for instructions to run with tmux and rlwrap).
 
 * requirements
 
@@ -55,13 +56,13 @@ stack test
 In a terminal:
 
 #+begin_example
-./demo/start-no-tmux.sh > /tmp/JUNO-LOGS
+./xserver.sh > /tmp/JUNO-LOGS
 #+end_example
 
 In a different terminal:
 
 #+begin_example
-./xclient-no-rlwrap.sh
+./xclient.sh
 #+end_example
 
 In the client terminal, interact as shown (=`# =>`= added to indicate what client returns):
