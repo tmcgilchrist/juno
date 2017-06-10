@@ -5,11 +5,13 @@ I am using this fork of Juno to learn and experiment with
 - Raft
 - Haskell
 
-* changes made since forking
+* changes made since forking (latest at top)
 
-- removed all Hopper related code
-- removed Consensus.Api and Juno.Runtime.Api.ApiServer (for now)
+- bumped stack LTS to latest
+- removed some global HLint ignores and fixed warnings
 - removed Persistence.SQLite
+- removed Consensus.Api and Juno.Runtime.Api.ApiServer (for now)
+- removed all Hopper related code
 
 * background
 

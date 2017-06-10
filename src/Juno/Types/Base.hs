@@ -86,9 +86,9 @@ instance FromJSON PublicKey where
              Nothing -> mzero
       else mzero
   parseJSON _ = mzero
-instance ToJSON (Map NodeID PublicKey) where
+instance {-# OVERLAPS #-} ToJSON (Map NodeID PublicKey) where
   toJSON = toJSON . Map.toList
-instance FromJSON (Map NodeID PublicKey) where
+instance {-# OVERLAPS #-} FromJSON (Map NodeID PublicKey) where
   parseJSON = fmap Map.fromList . parseJSON
 
 instance Eq PrivateKey where
@@ -106,9 +106,9 @@ instance FromJSON PrivateKey where
              Nothing -> mzero
       else mzero
   parseJSON _ = mzero
-instance ToJSON (Map NodeID PrivateKey) where
+instance {-# OVERLAPS #-} ToJSON (Map NodeID PrivateKey) where
   toJSON = toJSON . Map.toList
-instance FromJSON (Map NodeID PrivateKey) where
+instance {-# OVERLAPS #-} FromJSON (Map NodeID PrivateKey) where
   parseJSON = fmap Map.fromList . parseJSON
 
 -- These instances suck, but I can't figure out how to use the Get monad to fail out if not

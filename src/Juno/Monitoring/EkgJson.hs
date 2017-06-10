@@ -4,7 +4,7 @@ module Juno.Monitoring.EkgJson
     , encodeOne
     ) where
 
-import qualified Data.Aeson.Encode as A
+import qualified Data.Aeson as A
 import qualified Data.ByteString.Lazy as L
 
 import System.Metrics

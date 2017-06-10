@@ -16,7 +16,7 @@ import Data.Word (Word8)
 import Network.Socket (NameInfoFlag(NI_NUMERICHOST), addrAddress, getAddrInfo,
                        getNameInfo)
 import Prelude hiding (read)
-import Snap.Core (MonadSnap, Request, Snap, finishWith, getHeaders, getRequest,
+import Snap.Core (MonadSnap, Request, Snap, finishWith, getHeader, getRequest,
                   getResponse, method, Method(GET), modifyResponse, pass,
                   rqPathInfo, setContentType, setResponseStatus,
                   writeLBS)
@@ -76,8 +76,9 @@ monitor store = do
     wrapHandler fmt handler = method GET $ format fmt handler
 
 -- | The Accept header of the request.
+-- HC: CHANGE
 acceptHeader :: Request -> Maybe S.ByteString
-acceptHeader req = S.intercalate "," <$> getHeaders "Accept" req
+acceptHeader req = getHeader "Accept" req
 
 -- | Runs a Snap monad action only if the request's Accept header
 -- matches the given MIME type.
