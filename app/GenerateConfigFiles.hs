@@ -16,6 +16,9 @@ import qualified Data.Map.Strict as Map
 
 import Juno.Types
 
+configDir :: String
+configDir = "run/conf"
+
 nodes :: [NodeID]
 nodes = iterate (\n@(NodeID h p _) -> n {_port = p + 1, _fullAddr = "tcp://" ++ h ++ ":" ++ show (p+1)}) (NodeID "127.0.0.1" 10000 "tcp://127.0.0.1:10000")
 
@@ -50,8 +53,8 @@ main = do
       let clientKeyMaps = (Map.filterWithKey isAClient *** Map.filterWithKey isAClient) keyMaps'
       let clusterConfs = createClusterConfig df clusterKeyMaps (snd clientKeyMaps) <$> take n nodes
       let clientConfs = createClientConfig df (snd clusterKeyMaps) clientKeyMaps <$> clientIds
-      mapM_ (\c' -> Y.encodeFile ("conf" </> show (_port $ _nodeId c') ++ "-cluster.yaml") c') clusterConfs
-      mapM_ (\c' -> Y.encodeFile ("conf" </> show (_port $ _nodeId c') ++ "-client.yaml") c') clientConfs
+      mapM_ (\c' -> Y.encodeFile (configDir </> show (_port $ _nodeId c') ++ "-cluster.yaml") c') clusterConfs
+      mapM_ (\c' -> Y.encodeFile (configDir </> show (_port $ _nodeId c') ++ "-client.yaml") c') clientConfs
     _ -> putStrLn "Failed to read either input into a number, please try again"
 
 createClusterConfig :: Bool -> (Map NodeID PrivateKey, Map NodeID PublicKey) -> Map NodeID PublicKey -> NodeID -> Config

@@ -58,13 +58,13 @@ stack test
 In a terminal:
 
 #+begin_example
-./xserver.sh > /tmp/JUNO-LOGS
+./run/xserver.sh > /tmp/JUNO-LOGS
 #+end_example
 
 In a different terminal:
 
 #+begin_example
-./xclient.sh
+./run/xclient.sh
 #+end_example
 
 In the client terminal, interact as shown (=`# =>`= added to indicate what client returns):
