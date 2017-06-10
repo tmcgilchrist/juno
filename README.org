@@ -1,4 +1,16 @@
-* overview
+* intro
+
+I am using this fork of Juno to learn and experiment with
+- blockchain
+- Raft
+- Haskell
+
+* changes made since forking
+
+- removed all Hopper related code
+- removed ApiServer (for now)
+
+* background
 
 - Paxos : consensus in a network of unreliable processors
   - https://en.wikipedia.org/wiki/Paxos_(computer_science)
@@ -49,7 +61,7 @@ In a terminal:
 In a different terminal:
 
 #+begin_example
-./junoclient-no-rlwrap.sh
+./xclient-no-rlwrap.sh
 #+end_example
 
 In the client terminal, interact as shown (=`# =>`= added to indicate what client returns):
@@ -72,23 +84,6 @@ ObserveAccount foo
 
 CreateAccount bar
 # => Created Account: "bar"
-
-transfer(foo->bar,101%100)
-# => Success
-## Transaction Log ##
-Transfer 1.01 from foo to bar with signature: cryptSig
-
-## Previous Ledger ##
-Account: Amount
-----------------------
-bar: 0.0
-foo: 200.0
-
-## New Ledger ##
-Account: Amount
-----------------------
-bar: 1.01
-foo: 198.99
 
 ObserveAccounts
 # =>

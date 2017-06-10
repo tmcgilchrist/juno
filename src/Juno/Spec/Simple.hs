@@ -17,11 +17,10 @@ import Juno.Messaging.Types
 import Juno.Types
 import Juno.Messaging.ZMQ
 import Juno.Monitoring.Server (startMonitoring)
-import Juno.Runtime.Api.ApiServer
+-- import Juno.Runtime.Api.ApiServer
 
 import System.IO (BufferMode(..),stdout,stderr,hSetBuffering)
 import Control.Lens
-import Control.Monad
 import Control.Concurrent (modifyMVar_, yield, threadDelay, takeMVar, putMVar, newMVar, MVar)
 import qualified Control.Concurrent.Lifted as CL
 import Control.Concurrent.Chan.Unagi
@@ -261,15 +260,16 @@ runClient applyFn getEntries cmdStatusMap' = do
 --   [API write/place command -> toCommands] [getApiCommands -> juno read/poll command]
 runJuno :: (Command -> IO CommandResult) -> InChan (RequestId, [CommandEntry])
         -> OutChan (RequestId, [CommandEntry]) -> CommandMVarMap -> IO ()
-runJuno applyFn toCommands getApiCommands sharedCmdStatusMap = do
+runJuno applyFn _toCommands getApiCommands sharedCmdStatusMap = do
   setLineBuffering
   rconf <- getConfig
   let me = nodeIDtoAddr $ rconf ^. nodeId
+  {-
   -- Start The Api Server, communicates with the Juno protocol via sharedCmdStatusMap
   -- API interface will run on 800{nodeNum} for now, where the nodeNum for 10003 is 3
   let myApiPort = rconf ^. apiPort -- passed in on startup (default 8000): `--apiPort 8001`
   void $ CL.fork $ runApiServer toCommands sharedCmdStatusMap myApiPort
-
+  -}
   (inboxWrite, inboxRead) <- NoBlock.newChan
   inboxRead' <- newMVar =<< fmap head (NoBlock.streamChan 1 inboxRead)
   (cmdInboxWrite, cmdInboxRead) <- NoBlock.newChan

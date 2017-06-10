@@ -38,7 +38,6 @@ library
                      , Juno.Monitoring.EkgSnap
                      , Juno.Monitoring.Server
                      , Juno.Persistence.SQLite
-                     , Juno.Runtime.Api.ApiServer
                      , Juno.Runtime.MessageReceiver
                      , Juno.Runtime.Role
                      , Juno.Runtime.Sender
@@ -63,23 +62,10 @@ library
                      , Juno.Types.Spec
                      , Juno.Util.Combinator
                      , Juno.Util.Util
-                     , Hop.Apps.Juno.Server
-                     , Hop.Apps.Juno.Command
-                     , Hop.Apps.Juno.Client
-                     , Hop.Apps.Juno.JsonTypes
-                     , Hop.Apps.Juno.ApiDemoHandler
-                     , Hop.Apps.Juno.ApiHandlers
-                     , Hop.Apps.Juno.Ledger
-                     , Hop.Apps.Juno.Parser
-                     , Hop.Apps.Juno.Repl
-                     , Hop.Hoplite.Eval
-                     , Hop.Hoplite.Heap
-                     , Hop.Hoplite.STExcept
-                     , Hop.Hoplite.Term
-                     , Hop.Hoplite.Transmatic
-                     , Hop.Hoplite.Types
-                     , Hop.Schwifty.Swift.M105.Types
-                     , Hop.Schwifty.Swift.M105.Parser
+                     , App.X.Client
+                     , App.X.Command
+                     , App.X.Parser
+                     , App.X.Server
   build-depends:       SHA2
                      , aeson
                      , aeson-pretty
@@ -160,37 +146,26 @@ executable genconfs
   ghc-options:         -Wall -threaded -rtsopts
   default-language:    Haskell2010
 
-executable junoserver
-  main-is:             JunoServer.hs
+executable xserver
+  main-is:             Server.hs
   build-depends:       base < 5
                      , juno
-  hs-source-dirs:      app/Hop
+  hs-source-dirs:      app/X
   ghc-options:         -Wall -threaded -rtsopts
   ghc-prof-options:    -fprof-auto -fprof-auto-calls
   default-language:    Haskell2010
 
-executable junoclient
-  main-is:             JunoClient.hs
+executable xclient
+  main-is:             Client.hs
   build-depends:       base < 5
                      , juno
-  hs-source-dirs:      app/Hop
-  ghc-options:         -Wall -threaded -rtsopts
-  ghc-prof-options:    -fprof-auto -fprof-auto-calls
-  default-language:    Haskell2010
-
-executable junorepl
-  main-is:             JunoRepl.hs
-  build-depends:       base < 5
-                     , juno
-  hs-source-dirs:      app/Hop
+  hs-source-dirs:      app/X
   ghc-options:         -Wall -threaded -rtsopts
   ghc-prof-options:    -fprof-auto -fprof-auto-calls
   default-language:    Haskell2010
 
 test-suite hspec
-  other-modules:       JsonTypesSpec
-                     , WireFormatSpec
-                     , Hop.ParserSpec
+  other-modules:       WireFormatSpec
   type:                exitcode-stdio-1.0
   main-is:             hspec.hs
   hs-source-dirs:      test
