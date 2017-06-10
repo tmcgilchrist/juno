@@ -86,7 +86,7 @@ toAlotOfAers s = (alotOfAers, invalids)
 
 sequentialVerify :: (MonadIO m, MonadReader ReceiverEnv m) => KeySet -> [(ReceivedAt, SignedRPC)] -> m ()
 sequentialVerify ks msgs = do
-  (aes, noAes) <- return $ partition (\(_,SignedRPC{..}) -> if _digType _sigDigest == AE then True else False) msgs
+  (aes, noAes) <- return $ partition (\(_,SignedRPC{..}) -> _digType _sigDigest == AE) msgs
   (invalid, validNoAes) <- return $ partitionEithers $ parallelVerify ks noAes
   enqueueEvent <- view enqueue
   debug <- view debugPrint

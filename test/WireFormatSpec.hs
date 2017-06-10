@@ -4,6 +4,7 @@ module WireFormatSpec where
 
 import Test.Hspec
 import qualified Data.Map as Map
+import Data.Maybe (fromMaybe)
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Data.Sequence (Seq)
@@ -99,14 +100,14 @@ nodeIdFollower = NodeID "localhost" 10001 "tcp://127.0.0.1:10001"
 nodeIdClient = NodeID "localhost" 10002 "tcp://127.0.0.1:10002"
 
 privKeyLeader, privKeyFollower, privKeyClient :: PrivateKey
-privKeyLeader = maybe (error "bad leader key") id $ importPrivate "\204m\223Uo|\211.\144\131\&5Xmlyd$\165T\148\&11P\142m\249\253$\216\232\220c"
-privKeyFollower = maybe (error "bad leader key") id $ importPrivate "$%\181\214\b\138\246(5\181%\199\186\185\t!\NUL\253'\t\ENQ\212^\236O\SOP\217\ACK\EOT\170<"
-privKeyClient = maybe (error "bad leader key") id $ importPrivate "8H\r\198a;\US\249\233b\DLE\211nWy\176\193\STX\236\SUB\151\206\152\tm\205\205\234(\CAN\254\181"
+privKeyLeader = fromMaybe (error "bad leader key") $ importPrivate "\204m\223Uo|\211.\144\131\&5Xmlyd$\165T\148\&11P\142m\249\253$\216\232\220c"
+privKeyFollower = fromMaybe (error "bad leader key") $ importPrivate "$%\181\214\b\138\246(5\181%\199\186\185\t!\NUL\253'\t\ENQ\212^\236O\SOP\217\ACK\EOT\170<"
+privKeyClient = fromMaybe (error "bad leader key") $ importPrivate "8H\r\198a;\US\249\233b\DLE\211nWy\176\193\STX\236\SUB\151\206\152\tm\205\205\234(\CAN\254\181"
 
 pubKeyLeader, pubKeyFollower, pubKeyClient :: PublicKey
-pubKeyLeader = maybe (error "bad leader key") id $ importPublic "f\t\167y\197\140\&2c.L\209;E\181\146\157\226\137\155$\GS(\189\215\SUB\199\r\158\224\FS\190|"
-pubKeyFollower = maybe (error "bad leader key") id $ importPublic "\187\182\129\&4\139\197s\175Sc!\237\&8L \164J7u\184;\CANiC\DLE\243\ESC\206\249\SYN\189\ACK"
-pubKeyClient = maybe (error "bad leader key") id $ importPublic "@*\228W(^\231\193\134\239\254s\ETBN\208\RS\137\201\208,bEk\213\221\185#\152\&7\237\234\DC1"
+pubKeyLeader = fromMaybe (error "bad leader key") $ importPublic "f\t\167y\197\140\&2c.L\209;E\181\146\157\226\137\155$\GS(\189\215\SUB\199\r\158\224\FS\190|"
+pubKeyFollower = fromMaybe (error "bad leader key") $ importPublic "\187\182\129\&4\139\197s\175Sc!\237\&8L \164J7u\184;\CANiC\DLE\243\ESC\206\249\SYN\189\ACK"
+pubKeyClient = fromMaybe (error "bad leader key") $ importPublic "@*\228W(^\231\193\134\239\254s\ETBN\208\RS\137\201\208,bEk\213\221\185#\152\&7\237\234\DC1"
 
 keySet :: KeySet
 keySet = KeySet

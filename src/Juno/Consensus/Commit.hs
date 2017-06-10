@@ -7,6 +7,7 @@ module Juno.Consensus.Commit
 where
 
 import Data.List
+import Data.Maybe (fromMaybe)
 import Control.Lens
 import Control.Monad
 import Data.AffineSpace ((.-.))
@@ -90,7 +91,7 @@ makeCommandResponse tEnd cmd result = do
 makeCommandResponse' :: NodeID -> Maybe NodeID -> Command -> CommandResult -> Int64 -> CommandResponse
 makeCommandResponse' nid mlid Command{..} result lat = CommandResponse
              result
-             (maybe nid id mlid)
+             (fromMaybe nid mlid)
              nid
              _cmdRequestId
              lat

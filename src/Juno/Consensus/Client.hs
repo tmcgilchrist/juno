@@ -8,6 +8,7 @@ module Juno.Consensus.Client
 import Control.Lens hiding (Index)
 import Control.Monad.RWS
 import Data.Foldable (traverse_)
+import Data.Maybe (fromMaybe)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import Text.Read (readMaybe)
@@ -78,7 +79,7 @@ commandGetter getEntries cmdStatusMap' = do
     enqueueEvent $ ERPC $ CMDB' $ CommandBatch cmds'' NewMsg
   where
     batchSize :: (Num c, Read c) => SB8.ByteString -> c
-    batchSize cmd = maybe 500 id . readMaybe $ drop 11 $ SB8.unpack cmd
+    batchSize cmd = fromMaybe 500 . readMaybe $ drop 11 $ SB8.unpack cmd
 
     nextRid :: NodeID -> CommandEntry -> IO Command
     nextRid nid entry = do

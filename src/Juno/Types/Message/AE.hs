@@ -10,6 +10,7 @@ module Juno.Types.Message.AE
 import Codec.Compression.LZ4
 import Control.Parallel.Strategies
 import Control.Lens
+import Data.Maybe (fromMaybe)
 import Data.Sequence (Seq)
 import Data.Set (Set)
 import Data.Serialize (Serialize)
@@ -41,7 +42,7 @@ instance Serialize AEWire
 
 instance WireFormat AppendEntries where
   toWire nid pubKey privKey AppendEntries{..} = case _aeProvenance of
-    NewMsg -> let bdy = maybe (error "failure to compress AE") id $ compressHC $ S.encode $ AEWire (_aeTerm
+    NewMsg -> let bdy = fromMaybe (error "failure to compress AE") $ compressHC $ S.encode $ AEWire (_aeTerm
                                           ,_leaderId
                                           ,_prevLogIndex
                                           ,_prevLogTerm
