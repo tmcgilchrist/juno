@@ -1,5 +1,4 @@
-- update to latest (or at least higher) LTS
-  - requires dependency wrangling
+- xrun only works in "stack repl" not "stack exec xrun"
 
 - replace Juno's HopLite smart contract language with something else
 

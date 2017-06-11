@@ -127,6 +127,37 @@ library
   ghc-prof-options:    -fprof-auto -fprof-auto-calls
   default-language:    Haskell2010
 
+executable xserver
+  main-is:             Server.hs
+  build-depends:       base < 5
+                     , juno
+  hs-source-dirs:      app/X
+  ghc-options:         -Wall -threaded -rtsopts
+  ghc-prof-options:    -fprof-auto -fprof-auto-calls
+  default-language:    Haskell2010
+
+executable xrun
+  main-is:             Run.hs
+  build-depends:       async
+                     , base < 5
+                     , MissingH
+                     , process
+                     , text
+                     , thyme
+  hs-source-dirs:      app/X
+  ghc-options:         -Wall -threaded -rtsopts
+  ghc-prof-options:    -fprof-auto -fprof-auto-calls
+  default-language:    Haskell2010
+
+executable xclient
+  main-is:             Client.hs
+  build-depends:       base < 5
+                     , juno
+  hs-source-dirs:      app/X
+  ghc-options:         -Wall -threaded -rtsopts
+  ghc-prof-options:    -fprof-auto -fprof-auto-calls
+  default-language:    Haskell2010
+
 executable genconfs
   main-is:             GenerateConfigFiles.hs
   build-depends:       base < 5
@@ -141,24 +172,6 @@ executable genconfs
                      , yaml
   hs-source-dirs:      app
   ghc-options:         -Wall -threaded -rtsopts
-  default-language:    Haskell2010
-
-executable xserver
-  main-is:             Server.hs
-  build-depends:       base < 5
-                     , juno
-  hs-source-dirs:      app/X
-  ghc-options:         -Wall -threaded -rtsopts
-  ghc-prof-options:    -fprof-auto -fprof-auto-calls
-  default-language:    Haskell2010
-
-executable xclient
-  main-is:             Client.hs
-  build-depends:       base < 5
-                     , juno
-  hs-source-dirs:      app/X
-  ghc-options:         -Wall -threaded -rtsopts
-  ghc-prof-options:    -fprof-auto -fprof-auto-calls
   default-language:    Haskell2010
 
 test-suite hspec
