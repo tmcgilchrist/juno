@@ -41,7 +41,7 @@ sendInputToClients cs =
           , "create bar"
           , "showone foo"
           , "showone bar"
-          , "adjust foo (200%1)"
+          , "adjust foo 200"
           , "showone foo"
           , "showall"
           ] $ \s -> do

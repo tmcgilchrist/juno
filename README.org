@@ -77,13 +77,13 @@ create foo
 # => Created Account: "foo"
 
 showone foo
-# => Just (0 % 1)
+# => Just 0
 
-adjust foo (200%1)
-# => Adjusted Account "foo" by 200 % 1
+adjust foo 200
+# => Adjusted Account "foo" by 200
 
 showone foo
-# => Just (200 % 1)
+# => Just 200
 
 create bar
 # => Created Account: "bar"

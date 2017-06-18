@@ -18,9 +18,7 @@ import Juno.Types.Message.CMD
 import Apps.X.Parser
 
 -- state
-newtype XEnv = XEnv {
-  getStateMVar :: MV.MVar (Map.Map Text Rational)
-  }
+newtype XEnv = XEnv { getStateMVar :: MV.MVar (Map.Map Text Integer) }
 
 -- X
 starterEnv :: IO XEnv
@@ -63,8 +61,8 @@ runCommand env Command{_cmdEntry = cmd'@_, _cmdRequestId = _} = do
                 MV.putMVar mvar origState
                 return $ BSC.pack $ prettyLedger origState
 
-prettyLedger :: Map.Map Text Rational -> String
+prettyLedger :: Map.Map Text Integer -> String
 prettyLedger m = unlines $ Map.foldlWithKey
-  (\a k v -> a ++ [T.unpack k ++ ": " ++ show (fromRational v :: Double)])
+  (\a k v -> a ++ [T.unpack k ++ ": " ++ show (v :: Integer)])
   ["","Account: Amount", "----------------------"]
   m
