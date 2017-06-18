@@ -37,11 +37,13 @@ main = do
 
 sendInputToClients cs =
   forM_ cs $ \(_,_,hin) ->
-    forM_ [ "CreateAccount foo"
-          , "CreateAccount bar"
-          , "ObserveAccount foo"
-          , "ObserveAccount bar"
-          , "ObserveAccounts"
+    forM_ [ "create foo"
+          , "create bar"
+          , "showone foo"
+          , "showone bar"
+          , "adjust foo (200%1)"
+          , "showone foo"
+          , "showall"
           ] $ \s -> do
                 hPutStrLn hin s
                 hFlush hin

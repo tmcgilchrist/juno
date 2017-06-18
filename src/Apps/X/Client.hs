@@ -20,17 +20,17 @@ import Juno.Types
 
 import Apps.X.Parser
 
-prompt :: String
-prompt = "\ESC[0;31min>> \ESC[0m"
+promptIn :: String
+promptIn = "\ESC[0;31min>> \ESC[0m"
 
-promptGreen :: String
-promptGreen = "\ESC[0;32mout>> \ESC[0m"
+promptOut :: String
+promptOut = "\ESC[0;32mout>> \ESC[0m"
 
 flushStr :: String -> IO ()
 flushStr str = putStr str >> hFlush stdout
 
-readPrompt :: IO String
-readPrompt = flushStr prompt >> getLine
+promptRead :: IO String
+promptRead = flushStr promptIn >> getLine
 
 -- should we poll here till we get a result?
 showResult :: CommandMVarMap -> RequestId -> Maybe Int64 -> IO ()
@@ -39,23 +39,22 @@ showResult cmdStatusMap' rId Nothing =
     (CommandMap _ m) <- readMVar cmdStatusMap'
     case Map.lookup rId m of
       Nothing -> print $ "RequestId [" ++ show rId ++ "] not found."
-      Just (CmdApplied (CommandResult x) _) -> putStrLn $ promptGreen ++ BSC.unpack x
-      Just _ -> -- not applied yet, loop and wait
-        showResult cmdStatusMap' rId Nothing
+      Just (CmdApplied (CommandResult x) _) -> putStrLn $ promptOut ++ BSC.unpack x
+      -- not applied yet, loop and wait
+      Just _ -> showResult cmdStatusMap' rId Nothing
 showResult cmdStatusMap' rId pgm@(Just cnt) =
   threadDelay 1000 >> do
     (CommandMap _ m) <- readMVar cmdStatusMap'
     case Map.lookup rId m of
       Nothing -> print $ "RequestId [" ++ show rId ++ "] not found."
-      Just (CmdApplied (CommandResult _x) lat) ->
-        putStrLn $ intervalOfNumerous cnt lat
-      Just _ -> -- not applied yet, loop and wait
-        showResult cmdStatusMap' rId pgm
+      Just (CmdApplied (CommandResult _x) lat) -> putStrLn $ intervalOfNumerous cnt lat
+      -- not applied yet, loop and wait
+      Just _ -> showResult cmdStatusMap' rId pgm
 
 --  -> OutChan CommandResult
 runREPL :: InChan (RequestId, [CommandEntry]) -> CommandMVarMap -> IO ()
 runREPL toCommands' cmdStatusMap' = do
-  cmd <- readPrompt
+  cmd <- promptRead
   case cmd of
     "" -> runREPL toCommands' cmdStatusMap'
     _ -> do

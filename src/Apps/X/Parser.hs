@@ -17,10 +17,10 @@ import qualified Data.Text as T
 import Data.Ratio
 
 data XCommand
-  = CreateAccount Text
-  | AdjustAccount Text Rational
-  | ObserveAccount Text
-  | ObserveAccounts
+  = Create  Text
+  | Adjust  Text Rational
+  | ShowOne Text
+  | ShowAll
   -- | LedgerQueryCmd LedgerQuery
   -- | CommandInputQuery RequestId
   deriving (Eq, Show)
@@ -29,10 +29,10 @@ xParser
   :: (Monad m, TokenParsing m)
   => m (Either String XCommand)
 xParser
-  =   createAccount
-  <|> adjustAccount
-  <|> observeAccount
-  <|> observeAccounts
+  =   create
+  <|> adjust
+  <|> showOne
+  <|> showAll
 
 readX :: BSC.ByteString -> Either String XCommand
 readX m = case Atto.parseOnly xParser m of
@@ -40,32 +40,32 @@ readX m = case Atto.parseOnly xParser m of
   Right (Left e)  -> Left $ "Language Error: " ++ e
   Right (Right v) -> Right v
 
-createAccount
+create
   :: (Monad m, TokenParsing m)
   => m (Either String XCommand)
-createAccount = (Right . CreateAccount . T.pack) <$ ssString "CreateAccount" <*> some anyChar
+create = (Right . Create . T.pack) <$ ssString "create" <*> some anyChar
 
-adjustAccount
+adjust
   :: (Monad m, TokenParsing m)
   => m (Either String XCommand)
-adjustAccount = do
-  _ <- ssString "AdjustAccount"
+adjust = do
+  _ <- ssString "adjust"
   a <- manyTill anyChar space
   _ <- skipSpace
   amt <- myRational
-  return $ Right $ AdjustAccount (T.pack a) amt
+  return $ Right $ Adjust (T.pack a) amt
 
-observeAccount
+showOne
   :: (Monad m, TokenParsing m)
   => m (Either String XCommand)
-observeAccount = (Right . ObserveAccount . T.pack) <$ ssString "ObserveAccount" <*> some anyChar
+showOne = (Right . ShowOne . T.pack) <$ ssString "showone" <*> some anyChar
 
-observeAccounts
+showAll
   :: (Monad m, TokenParsing m)
   => m (Either String XCommand)
-observeAccounts = do
-  _ <- ssString "ObserveAccounts"
-  return $ Right ObserveAccounts
+showAll = do
+  _ <- ssString "showall"
+  return $ Right ShowAll
 
 -- negative representation: -10%1, (-10)%1, ((-10)%1) (-10%1)
 -- positive representation:  10%1, (10)%1, ((10)%1), (10%1)

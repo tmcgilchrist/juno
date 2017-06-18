@@ -1,6 +1,6 @@
+{-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TupleSections #-}
+{-# LANGUAGE TupleSections       #-}
 
 module Apps.X.Command where
 
@@ -16,7 +16,6 @@ import Juno.Types (CommandEntry(..), CommandResult(..))
 import Juno.Types.Message.CMD
 
 import Apps.X.Parser
--- import Hop.Apps.Juno.Ledger (runQuery, convertQuery)
 
 -- state
 newtype XEnv = XEnv {
@@ -30,41 +29,42 @@ starterEnv = XEnv <$> MV.newMVar Map.empty
 runCommand :: XEnv -> Command -> IO CommandResult
 runCommand env Command{_cmdEntry = cmd'@_, _cmdRequestId = _} = do
   let mvar = getStateMVar env
-  orgState <- MV.takeMVar mvar
+  origState <- MV.takeMVar mvar
   case readX $ unCommandEntry cmd' of
     Left err -> do
-      MV.putMVar mvar orgState
+      MV.putMVar mvar origState
       return $ CommandResult $ BSC.pack err
     Right cmd -> fmap CommandResult $ handle
         (\e -> do
-            MV.putMVar mvar orgState
+            MV.putMVar mvar origState
             return $ BSC.pack $ show (e :: SomeException)) $
         case cmd of
-            CreateAccount acct ->
-                if Map.member acct orgState
-                then do
-                    MV.putMVar mvar orgState
-                    return "Account Already Exists"
+            Create acct ->
+                if Map.member acct origState then do
+                  MV.putMVar mvar origState
+                  return "Account Already Exists"
                 else do
-                    MV.putMVar mvar (Map.insert acct 0 orgState)
-                    return $ BSC.pack $ "Created Account: " ++ show acct
+                  MV.putMVar mvar (Map.insert acct 0 origState)
+                  return $ BSC.pack $ "Created Account: " ++ show acct
 
-            AdjustAccount acct amount ->
-                if Map.member acct orgState
-                then do
-                    MV.putMVar mvar (Map.adjust (+ amount) acct orgState)
-                    return $ BSC.pack $ "Adjusted Account " ++ show acct ++ " by " ++ show amount
+            Adjust acct amount ->
+                if Map.member acct origState then do
+                  MV.putMVar mvar (Map.adjust (+ amount) acct origState)
+                  return $ BSC.pack $ "Adjusted Account " ++ show acct ++ " by " ++ show amount
                 else do
-                    MV.putMVar mvar orgState
-                    return $ BSC.pack $ "Error: Account " ++ show acct ++ " does not exist!"
+                  MV.putMVar mvar origState
+                  return $ BSC.pack $ "Error: Account " ++ show acct ++ " does not exist!"
 
-            ObserveAccount acct -> do
-                MV.putMVar mvar orgState
-                return $ BSC.pack $ show $ Map.lookup acct orgState
+            ShowOne acct -> do
+                MV.putMVar mvar origState
+                return $ BSC.pack $ show $ Map.lookup acct origState
 
-            ObserveAccounts -> do
-                MV.putMVar mvar orgState
-                return $ BSC.pack $ prettyLedger orgState
+            ShowAll -> do
+                MV.putMVar mvar origState
+                return $ BSC.pack $ prettyLedger origState
 
 prettyLedger :: Map.Map Text Rational -> String
-prettyLedger m = unlines $ Map.foldlWithKey (\l k v -> l ++ [T.unpack k ++ ": " ++ show (fromRational v :: Double)]) ["","Account: Amount", "----------------------"] m
+prettyLedger m = unlines $ Map.foldlWithKey
+  (\a k v -> a ++ [T.unpack k ++ ": " ++ show (fromRational v :: Double)])
+  ["","Account: Amount", "----------------------"]
+  m

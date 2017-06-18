@@ -70,25 +70,25 @@ In a different terminal:
 In the client terminal, interact as shown (=`# =>`= added to indicate what client returns):
 
 #+begin_example
-ObserveAccount foo
+showone foo
 # => Nothing
 
-CreateAccount foo
+create foo
 # => Created Account: "foo"
 
-ObserveAccount foo
+showone foo
 # => Just (0 % 1)
 
-AdjustAccount foo (200%1)
+adjust foo (200%1)
 # => Adjusted Account "foo" by 200 % 1
 
-ObserveAccount foo
+showone foo
 # => Just (200 % 1)
 
-CreateAccount bar
+create bar
 # => Created Account: "bar"
 
-ObserveAccounts
+showall
 # =>
 Account: Amount
 ----------------------
