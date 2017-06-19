@@ -7,6 +7,7 @@ I am using this fork of Juno to learn and experiment with
 
 * changes made since forking (latest at top)
 
+- run in docker (to avoid zmq problem -- see below)
 - bumped stack LTS to latest
 - removed some global HLint ignores and fixed warnings
 - removed Persistence.SQLite
@@ -103,4 +104,33 @@ Do =^C= in both terminals. Then:
 #+begin_example
 rm /tmp/JUNO-LOGS
 #+end_example
+
+* running on mac
+
+- ZEROMQ problem
+
+on my mac running 10.11.6 El Capitan I get this when running =run/xserver.sh= :
+
+#+begin_example
+Thread 3 Crashed:
+0   libsystem_kernel.dylib        	0x00007fff850eff06 __pthread_kill + 10
+1   libsystem_pthread.dylib       	0x00007fff88a9b4ec pthread_kill + 90
+2   libsystem_c.dylib             	0x00007fff91fa76df abort + 129
+3   libzmq.5.dylib                	0x000000011005318b zmq::zmq_abort(char const*) + 9
+4   libzmq.5.dylib                	0x00000001100564fb zmq::kqueue_t::kevent_add(int, short, void*) + 145
+5   libzmq.5.dylib                	0x0000000110053aec zmq::io_thread_t::io_thread_t(zmq::ctx_t*, unsigned int) + 210
+6   libzmq.5.dylib                	0x000000011004b184 zmq::ctx_t::create_socket(int) + 858
+7   libzmq.5.dylib                	0x000000011007da4b zmq_socket + 41
+8   junoserver                    	0x000000010e059253 0x10db32000 + 5403219
+#+end_example
+
+To work around it, I put
+
+#+begin_example
+docker:
+    enable: true
+#+end_example
+
+in =stack.yaml= so things run in a docker container (that does not exhibit the problem).
+
 

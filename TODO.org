@@ -1,26 +1,10 @@
 - xrun only works in "stack repl" not "stack exec xrun"
+  - =stack repl; 3; Main.main=
 
-- replace Juno's HopLite smart contract language with something else
+- plug in a smart contract language
 
 - rewrite monitor, demoui
   - perhaps use purescript or eta or ?
-
-- fix ZEROMQ problem:
-
-on my mac (10.11.6 El Capitan):
-
-#+begin_example
-Thread 3 Crashed:
-0   libsystem_kernel.dylib        	0x00007fff850eff06 __pthread_kill + 10
-1   libsystem_pthread.dylib       	0x00007fff88a9b4ec pthread_kill + 90
-2   libsystem_c.dylib             	0x00007fff91fa76df abort + 129
-3   libzmq.5.dylib                	0x000000011005318b zmq::zmq_abort(char const*) + 9
-4   libzmq.5.dylib                	0x00000001100564fb zmq::kqueue_t::kevent_add(int, short, void*) + 145
-5   libzmq.5.dylib                	0x0000000110053aec zmq::io_thread_t::io_thread_t(zmq::ctx_t*, unsigned int) + 210
-6   libzmq.5.dylib                	0x000000011004b184 zmq::ctx_t::create_socket(int) + 858
-7   libzmq.5.dylib                	0x000000011007da4b zmq_socket + 41
-8   junoserver                    	0x000000010e059253 0x10db32000 + 5403219
-#+end_example
 
 - type-level assurances of main RAFT/Tangaroa transitions
   - See
