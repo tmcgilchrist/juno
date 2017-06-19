@@ -22,14 +22,14 @@ import           System.Process           (ProcessHandle,
                                            std_in, std_out)
 
 configDir = "run/conf"
-logDir    = "/tmp"
+logDir    = "log"
 
 main = do
   enterBanner '='
   p <- readProcess "pwd" [] ""
   ts <- timestamp
-  print ("pwd:" <> p)
-  print ("timestamp:" <> ts)
+  putStrLn ("pwd:" <> p)
+  putStrLn ("timestamp:" <> ts)
   _ <- startServers ts
   cs <- startClients ts
   sendInputToClients cs
@@ -47,7 +47,7 @@ sendInputToClients cs =
           ] $ \s -> do
                 hPutStrLn hin s
                 hFlush hin
-                print s
+                putStrLn s
 
 startServers :: String -> IO [(ProcessHandle, Handle)]
 startServers ts = do
@@ -105,10 +105,10 @@ timestamp = do
   (ZonedTime (LocalTime d' t') _) <- getZonedTime
   return $ showGregorian d' <> "T" <> take 15 (show t')
 
-enterBanner s = print (replicate 50 s)
+enterBanner s = putStrLn (replicate 50 s)
 
 loopBanner s = do
-  print "--------------------------------------------------"
-  print s
+  putStrLn "--------------------------------------------------"
+  putStrLn s
 
 -- End of file.
