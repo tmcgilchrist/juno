@@ -18,7 +18,6 @@ import Control.Monad.Reader
 import Snap.Http.Server
 import Snap.Core
 import Snap.CORS
-
 import Apps.Juno.ApiHandlers
 import Juno.Types hiding (Config)
 

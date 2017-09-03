@@ -1,5 +1,6 @@
 language: c
-sudo: false
+sudo: required
+dist: trusty
 
 git:
   submodules: false  # whether to recursively clone submodules
@@ -31,6 +32,8 @@ matrix:
 before_install:
  - unset CC
  - PATH=/opt/ghc/bin:/opt/ghc-ppa-tools/bin:$PATH
+ - sudo apt-get -qq update
+ - sudo apt-get install -y libzmq3
 
 install:
  - travis_retry cabal update -v

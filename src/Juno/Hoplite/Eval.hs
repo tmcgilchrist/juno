@@ -21,7 +21,6 @@ import           Control.Monad.RWS.Strict
 import           Data.Data
 import qualified Data.Map.Strict as Map
 import           Data.Text (Text,pack)
-import           Data.Typeable
 import           GHC.Generics
 import           Juno.Hoplite.Heap
 import           Juno.Hoplite.STExcept

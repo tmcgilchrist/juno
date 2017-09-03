@@ -60,4 +60,3 @@ case "${1:-}" in
 upgrade) shift; enable_version "$@" ;;
 *) exec_mafia "$@"
 esac
-# Version: 2364c8d33387b6c6db534cbd4f2f068aa0856597
